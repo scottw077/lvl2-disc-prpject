@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -15,14 +16,40 @@ def sign_up():
     usernametxt = Label(root, text="Create a Username", font=(
         "Arial 12 bold"), fg="white", bg="#5b5b5c")
     usernametxt.grid(row=1, column=3)
-    username = Entry(root, width=20, justify="center")
-    username.grid(row=2, column=3)
+    username_entry = Entry(root, width=20, justify="center")
+    username_entry.grid(row=2, column=3)
+
+    spacer1 = Label(root, text="", bg="#5b5b5c")
+    spacer1.grid(row=3, column=3)
 
     pwdtxt = Label(root, text="Create a Password", font=(
         "Arial 12 bold"), fg="white", bg="#5b5b5c")
     pwdtxt.grid(row=4, column=3)
-    password = Entry(root, width=20, justify="center")
+    password = Entry(root, width=20, justify="center", show="*")
     password.grid(row=5, column=3)
+
+    spacer2 = Label(root, text="", bg="#5b5b5c")
+    spacer2.grid(row=6, column=3)
+
+    confirmpwdtxt = Label(root, text="Confirm Password", font=(
+        "Arial 12 bold"), fg="white", bg="#5b5b5c")
+    confirmpwdtxt.grid(row=7, column=3)
+    confirmpassword = Entry(root, width=20, justify="center", show="*")
+    confirmpassword.grid(row=8, column=3)
+
+    spacer3 = Label(root, text="", bg="#5b5b5c")
+    spacer3.grid(row=9, column=3)
+
+    sign_upbutton = Button(root, text="Sign Up", padx=30,
+                           pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process(username_entry.get(), password.get(), confirmpassword.get()))
+    sign_upbutton.grid(row=10, column=3)
+
+
+def signup_process(username, pwd, confirmpwd):
+    print(username, pwd, confirmpwd)
+    if " " in username:
+        messagebox.showerror(
+            "An error occured", "Error, cannot have spaces in username")
 
 
 sign_up()
