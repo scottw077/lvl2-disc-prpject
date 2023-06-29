@@ -75,9 +75,50 @@ def signup_process(username, pwd, confirmpwd):
     else:
         new_user = [username, pwd]
         userpass.append(new_user)
+
         with open("usernames.json", "w") as j:
             json.dump(userpass, j)
+        messagebox.showinfo("Success!", "Sucessfully Signed Up")
 
 
-sign_up()
+def login():
+    logintxt = Label(root, text="Login", font=(
+        "Impact 80"), fg="white", bg="#5b5b5c")
+    logintxt.grid(row=0, column=3)
+
+    usertxt = Label(root, text="Username:", font=(
+        "Arial 12 bold"), fg="white", bg="#5b5b5c")
+    usertxt.grid(row=1, column=3)
+    user_entry = Entry(root, width=20, justify="center")
+    user_entry.grid(row=2, column=3)
+
+    spacer1 = Label(root, text="", bg="#5b5b5c")
+    spacer1.grid(row=3, column=3)
+
+    pwdtxt = Label(root, text="Password:", font=(
+        "Arial 12 bold"), fg="white", bg="#5b5b5c")
+    pwdtxt.grid(row=4, column=3)
+    pwd_entry = Entry(root, width=20, justify="center", show="*")
+    pwd_entry.grid(row=5, column=3)
+
+    spacer2 = Label(root, text="", bg="#5b5b5c")
+    spacer2.grid(row=6, column=3)
+
+    login_button = Button(root, text="Login", padx=30,
+                          pady=10, font=("Arial 12 bold"), borderwidth=6)
+    login_button.grid(row=7, column=3)
+
+
+def login_process(username, password):
+    with open("usernames.json") as c:
+        userpass = json.load(c)
+        users = [user[0]for user in userpass]
+
+    if username in users:
+        position = users.index(username)
+        if password == users[position][1]:
+
+
+login()
+
 root.mainloop()
