@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+import json
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -41,15 +42,31 @@ def sign_up():
     spacer3.grid(row=9, column=3)
 
     sign_upbutton = Button(root, text="Sign Up", padx=30,
-                           pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process(username_entry.get(), password.get(), confirmpassword.get()))
+                           pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process
+                           (username_entry.get(), password.get(), confirmpassword.get()))
     sign_upbutton.grid(row=10, column=3)
 
 
 def signup_process(username, pwd, confirmpwd):
-    print(username, pwd, confirmpwd)
-    if " " in username:
+    with open("usernames.json", 'r') as c:
+        usernames = json.load(c)
+
+    if " " in username or pwd or confirmpwd:
         messagebox.showerror(
-            "An error occured", "Error, cannot have spaces in username")
+            "An error occured", "Error, cannot have"
+            " spaces in username and password")
+
+    elif "" == username or pwd or confirmpwd:
+        messagebox.showinfo("Entry Box Empty!", "Empty "
+                            "Username, Password, or confirm password box!")
+
+    elif pwd != confirmpwd:
+        messagebox.showerror("An error occured",
+                             "Error, Passwords must match!")
+
+    elif username in usernames:
+        messagebox.showinfo("Username already Taken!", "The username you have "
+                            "inputed is already taken! Please choose a different username")
 
 
 sign_up()
