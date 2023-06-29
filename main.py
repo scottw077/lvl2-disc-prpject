@@ -51,9 +51,6 @@ def signup_process(username, pwd, confirmpwd):
     with open("usernames.json") as c:
         userpass = json.load(c)
         users = [user[0]for user in userpass]
-    print(userpass)
-    print(users)
-
     if " " in username:
         messagebox.showerror(
             "An error occured", "Error, cannot have spaces in username")
@@ -75,6 +72,11 @@ def signup_process(username, pwd, confirmpwd):
     elif username in users:
         messagebox.showinfo("Username already Taken!", "The username you have "
                             "inputed is already taken! Please choose a different username")
+    else:
+        new_user = [username, pwd]
+        userpass.append(new_user)
+        with open("usernames.json", "w") as j:
+            json.dump(userpass, j)
 
 
 sign_up()
