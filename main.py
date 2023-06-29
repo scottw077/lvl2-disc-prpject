@@ -48,10 +48,12 @@ def sign_up():
 
 
 def signup_process(username, pwd, confirmpwd):
-    with open("usernames.json", 'r') as c:
+    print("T{}{}{}T".format(username, pwd, confirmpwd))
+    with open("usernames.json") as c:
         usernames = json.load(c)
+        users = [user[0]for user in usernames]
 
-    if " " in username or pwd or confirmpwd:
+    if " " in username:
         messagebox.showerror(
             "An error occured", "Error, cannot have"
             " spaces in username and password")
@@ -64,7 +66,7 @@ def signup_process(username, pwd, confirmpwd):
         messagebox.showerror("An error occured",
                              "Error, Passwords must match!")
 
-    elif username in usernames:
+    elif username in users:
         messagebox.showinfo("Username already Taken!", "The username you have "
                             "inputed is already taken! Please choose a different username")
 
