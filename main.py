@@ -105,8 +105,9 @@ def login():
     spacer2.grid(row=6, column=3)
 
     login_button = Button(root, text="Login", padx=30,
-                          pady=10, font=("Arial 12 bold"), borderwidth=6)
-    login_button.grid(row=7, column=3)
+                          pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
+                           (user_entry.get(), pwd_entry.get()))
+    login_button.grid(row=9, column=3)
 
 
 def login_process(username, password):
@@ -116,8 +117,18 @@ def login_process(username, password):
 
     if username in users:
         position = users.index(username)
-        if password == users[position][1]:
+        if password == userpass[position][1]:
+            print("correct")
+        else:
+            incorrect_txt()
+    else:
+        incorrect_txt()   
 
+def incorrect_txt():
+    incorrect_txt = Label(root, text="Username or Password is incorrect, please try again", bg= "#5b5b5c", fg = "red")
+    incorrect_txt.grid(row=7, column=3)
+    spacer3 = Label(root, text="", bg="#5b5b5c")        
+    spacer3.grid(row=8, column=3) 
 
 login()
 
