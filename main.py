@@ -115,21 +115,69 @@ def login_process(username, password):
         userpass = json.load(c)
         users = [user[0]for user in userpass]
 
-    if username in users:
+    if "" == username:
+        messagebox.showinfo("Entry Box Empty!", "Empty Username box!")
+
+    elif "" == password:
+        messagebox.showinfo("Entry Box Empty!", "Empty Password box!")
+    
+    elif username in users:
         position = users.index(username)
         if password == userpass[position][1]:
             print("correct")
         else:
-            incorrect_txt()
+            messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
     else:
-        incorrect_txt()   
+        messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
+          
+def main_menu():
+    spacer1 = Label(root, text="", bg="#5b5b5c")
+    spacer1.grid(row=0, column=3)
+    
+    add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=("Arial 18 bold"), borderwidth=6)
+    add_job_btn.grid(row=1, column=3)
 
-def incorrect_txt():
-    incorrect_txt = Label(root, text="Username or Password is incorrect, please try again", bg= "#5b5b5c", fg = "red")
-    incorrect_txt.grid(row=7, column=3)
-    spacer3 = Label(root, text="", bg="#5b5b5c")        
-    spacer3.grid(row=8, column=3) 
+    staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=("Arial 18 bold"), borderwidth=6)
+    staff_tracker_btn.grid(row=1, column=2)
 
-login()
+def add_job():
+    addjobtxt = Label(root, text="Add Job", font=(
+        "Impact 60"), fg="white", bg="#5b5b5c")
+    addjobtxt.grid(row=0, column=3)
+
+    nametxt = Label(root, text="Client's Name", font=(
+        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    nametxt.grid(row=2, column=3)
+    name_entry = Entry(root, width=20, justify="center")
+    name_entry.grid(row=3, column=3)
+
+    spacer1 = Label(root, text="", bg="#5b5b5c")
+    spacer1.grid(row=4, column=3)
+
+    emailtxt = Label(root, text="Client's Email Address", font=(
+        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    emailtxt.grid(row=5, column=3)
+    email_entry = Entry(root, width=20, justify="center")
+    email_entry.grid(row=6, column=3)
+
+    spacer2 = Label(root, text="", bg="#5b5b5c")
+    spacer2.grid(row=7, column=3)
+
+    phnenumtxt = Label(root, text="Client's Phone Number", font=(
+        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    phnenumtxt.grid(row=8, column=3)
+    phnenum_entry = Entry(root, width=20, justify="center")
+    phnenum_entry.grid(row=9, column=3)
+
+    spacer3 = Label(root, text="", bg="#5b5b5c")
+    spacer3.grid(row=10, column=3)
+
+    addresstxt = Label(root, text="Client's Site Address", font=(
+        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    addresstxt.grid(row=11, column=3)
+    address_entry = Entry(root, width=20, justify="center")
+    address_entry.grid(row=12, column=3)
+
+add_job()
 
 root.mainloop()
