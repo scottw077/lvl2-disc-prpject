@@ -141,42 +141,64 @@ def main_menu():
     staff_tracker_btn.grid(row=1, column=2)
 
 def add_job():
-    addjobtxt = Label(root, text="Add Job", font=(
+    frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
+    frame.grid(row=0, column=3)
+
+
+    addjobtxt = Label(frame, text="Add Job", font=(
         "Impact 60"), fg="white", bg="#5b5b5c")
     addjobtxt.grid(row=0, column=3)
 
-    nametxt = Label(root, text="Client's Name", font=(
-        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    nametxt = Label(frame, text="Client's Name", font=(
+        "Arial 13 bold"), fg="white", bg="#5b5b5c")
     nametxt.grid(row=2, column=3)
-    name_entry = Entry(root, width=20, justify="center")
+    name_entry = Entry(frame, width=20, justify="center")
     name_entry.grid(row=3, column=3)
 
-    spacer1 = Label(root, text="", bg="#5b5b5c")
+    spacer1 = Label(frame, text="", bg="#5b5b5c")
     spacer1.grid(row=4, column=3)
 
-    emailtxt = Label(root, text="Client's Email Address", font=(
-        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    emailtxt = Label(frame, text="Client's Email Address", font=(
+        "Arial 13 bold"), fg="white", bg="#5b5b5c")
     emailtxt.grid(row=5, column=3)
-    email_entry = Entry(root, width=20, justify="center")
+    email_entry = Entry(frame, width=20, justify="center")
     email_entry.grid(row=6, column=3)
 
-    spacer2 = Label(root, text="", bg="#5b5b5c")
+    spacer2 = Label(frame, text="", bg="#5b5b5c")
     spacer2.grid(row=7, column=3)
 
-    phnenumtxt = Label(root, text="Client's Phone Number", font=(
-        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    phnenumtxt = Label(frame, text="Client's Phone Number", font=(
+        "Arial 13 bold"), fg="white", bg="#5b5b5c")
     phnenumtxt.grid(row=8, column=3)
-    phnenum_entry = Entry(root, width=20, justify="center")
+    phnenum_entry = Entry(frame, width=20, justify="center")
     phnenum_entry.grid(row=9, column=3)
 
-    spacer3 = Label(root, text="", bg="#5b5b5c")
+    spacer3 = Label(frame, text="", bg="#5b5b5c")
     spacer3.grid(row=10, column=3)
 
-    addresstxt = Label(root, text="Client's Site Address", font=(
-        "Arial 15 bold"), fg="white", bg="#5b5b5c")
+    addresstxt = Label(frame, text="Client's Site Address", font=(
+        "Arial 13 bold"), fg="white", bg="#5b5b5c")
     addresstxt.grid(row=11, column=3)
-    address_entry = Entry(root, width=20, justify="center")
+    address_entry = Entry(frame, width=20, justify="center")
     address_entry.grid(row=12, column=3)
+
+    spacer4 = Label(frame, text="", bg="#5b5b5c")
+    spacer4.grid(row=13, column=3)
+
+    next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get()))
+    next_btn.grid(row=14, column=3)
+
+
+
+def add_job_process(name, email, phnenum, address):
+    if "@" not in email:
+        messagebox.showerror("An error occured", "No '@' in email address, please try again")
+    
+    elif phnenum is not int:
+        messagebox.showerror("An error occured", "Phone number cannot contain letters")
+
+    else:
+        print("nothing")
 
 add_job()
 
