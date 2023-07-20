@@ -89,6 +89,9 @@ def login():
     usertxt = Label(root, text="Username:", font=(
         "Arial 12 bold"), fg="white", bg="#5b5b5c")
     usertxt.grid(row=1, column=3)
+    
+    global user_entry
+
     user_entry = Entry(root, width=20, justify="center")
     user_entry.grid(row=2, column=3)
 
@@ -108,7 +111,7 @@ def login():
                           pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
                            (user_entry.get(), pwd_entry.get()))
     login_button.grid(row=9, column=3)
-
+    
 
 def login_process(username, password):
     with open("usernames.json") as c:
@@ -124,12 +127,14 @@ def login_process(username, password):
     elif username in users:
         position = users.index(username)
         if password == userpass[position][1]:
-            print("correct")
+            print("correct")   
         else:
             messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
     else:
         messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
-          
+
+
+
 def main_menu():
     spacer1 = Label(root, text="", bg="#5b5b5c")
     spacer1.grid(row=0, column=3)
@@ -142,12 +147,12 @@ def main_menu():
 
 def add_job():
 
-    addjobtxt = Label(root, text="Add Job", font=(
-        "Impact 60"), fg="white", bg="#5b5b5c")
-    addjobtxt.grid(row=0, column=3)
-
     frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
-    frame.grid(row=1, column=3)
+    frame.grid(row=0, column=3)
+    
+    addjobtxt = Label(frame, text="Add Job", font=(
+        "Impact 60"), fg="white", bg="#5b5b5c")
+    addjobtxt.grid(row=1, column=3)
 
     nametxt = Label(frame, text="Client's Name", font=(
         "Arial 13 bold"), fg="white", bg="#5b5b5c")
@@ -185,12 +190,12 @@ def add_job():
     spacer4 = Label(frame, text="", bg="#5b5b5c")
     spacer4.grid(row=13, column=3)
 
-    next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
+    next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job2(name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
     next_btn.grid(row=14, column=3)
 
 
 
-def add_job_process(name, email, phnenum, address, frame):
+def add_job2(name, email, phnenum, address, frame):
     if "@" not in email or "." not in email:
         messagebox.showerror("An error occured", "Email Address is not valid, please try again")
     
@@ -209,33 +214,61 @@ def add_job_process(name, email, phnenum, address, frame):
     else:
         frame.grid_forget()
 
-        jobtype_txt = Label(root, text="Job Type", font=(
+        frame1 = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
+        frame1.grid(row=0, column=3)
+
+        addjobtxt = Label(frame1, text="Add Job", font=(
+                        "Impact 60"), fg="white", bg="#5b5b5c")
+        addjobtxt.grid(row=1, column=3)
+
+        jobtype_txt = Label(frame1, text="Job Type", font=(
         "Arial 16 bold"), fg="white", bg="#5b5b5c")
-        jobtype_txt.grid(row=1, column=3)
-        
+        jobtype_txt.grid(row=2, column=3)
         jobtype_default = StringVar()
         jobtype_default.set("Select Job Type")
-        
         job_types = ["monday", "tuesday", "wednesday"]
-        
-        jobtype_entry = OptionMenu(root, jobtype_default, *job_types)
+        jobtype_entry = OptionMenu(frame1, jobtype_default, *job_types)
         jobtype_entry.grid(row=3, column=3)
 
-        spacer1 = Label(frame, text="", bg="#5b5b5c")
+        spacer1 = Label(frame1, text="", bg="#5b5b5c")
         spacer1.grid(row=4, column=3)
 
-        jobstatus_txt = Label(root, text="Job Status", font=("Arial 16 bold"), fg="white", bg="#5b5b5c")
+
+        jobstatus_txt = Label(frame1, text="Job Status", font=("Arial 16 bold"), fg="white", bg="#5b5b5c")
         jobstatus_txt.grid(row=5, column=3)
-        
         jobstatus_default = StringVar()
         jobstatus_default.set("Select Job Status")
-        
         job_statuses = ["started", "half-way through", "finished"]
-        
-        jobstatus_entry = OptionMenu(root, jobstatus_default, *job_statuses)
+        jobstatus_entry = OptionMenu(frame1, jobstatus_default, *job_statuses)
         jobstatus_entry.grid(row=6, column=3)
 
-     
+        spacer2 = Label(frame1, text="", bg="#5b5b5c")
+        spacer2.grid(row=7, column=3)
+
+        staff_txt = Label(frame1, text="Staff", font=("Arial 16 bold"), fg="white", bg="#5b5b5c")
+        staff_txt.grid(row=8, column=3)
+        staff_default = StringVar()
+        staff_default.set("Select Staff")
+        staff = ["sdfs", "sdfsdf"]
+        staff_entry = OptionMenu(frame1, staff_default, *staff)
+        staff_entry.grid(row=9, column=3)
+
+        spacer3 = Label(frame1, text="", bg="#5b5b5c")
+        spacer3.grid(row=10, column=3)
+
+        add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, font=("Arial 12 bold"), command= lambda: add_job_process(name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), staff_default.get(), frame1))
+        add_job_btn.grid(row=11, column=3)
+
+def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame):
+    new_job = [name, email, phnenum, address, job_type, job_status, staff]
+    with open("jobs.json", "w") as j:
+        json.dump(new_job, j)
+    messagebox.showinfo("Success!", "Sucessfully Signed Up")
+    frame.grid_forget()
+    main_menu()
+
+
+
 
 add_job()
 
