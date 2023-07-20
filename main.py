@@ -141,13 +141,13 @@ def main_menu():
     staff_tracker_btn.grid(row=1, column=2)
 
 def add_job():
-    frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
-    frame.grid(row=0, column=3)
 
-
-    addjobtxt = Label(frame, text="Add Job", font=(
+    addjobtxt = Label(root, text="Add Job", font=(
         "Impact 60"), fg="white", bg="#5b5b5c")
     addjobtxt.grid(row=0, column=3)
+
+    frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
+    frame.grid(row=1, column=3)
 
     nametxt = Label(frame, text="Client's Name", font=(
         "Arial 13 bold"), fg="white", bg="#5b5b5c")
@@ -185,21 +185,59 @@ def add_job():
     spacer4 = Label(frame, text="", bg="#5b5b5c")
     spacer4.grid(row=13, column=3)
 
-    next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get()))
+    next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
     next_btn.grid(row=14, column=3)
 
 
 
-def add_job_process(name, email, phnenum, address):
-    if "@" not in email:
-        messagebox.showerror("An error occured", "No '@' in email address, please try again")
+def add_job_process(name, email, phnenum, address, frame):
+    if "@" not in email or "." not in email:
+        messagebox.showerror("An error occured", "Email Address is not valid, please try again")
     
-    elif phnenum is not int:
+    elif phnenum.isalpha():
         messagebox.showerror("An error occured", "Phone number cannot contain letters")
 
+    elif name == "":
+        messagebox.showinfo("Entry Box Empty!", "Empty Client's Name Box! Please enter the client's name")
+    
+    elif phnenum == "":
+        messagebox.showinfo("Entry Box Empty!", "Empty Client's Phone Number Box! Please enter the client's phone number")
+    
+    elif address == "":
+        messagebox.showinfo("Entry Box Empty!", "Empty Client's Address Box! Please enter the client's address")
+    
     else:
-        print("nothing")
+        frame.grid_forget()
+
+        jobtype_txt = Label(root, text="Job Type", font=(
+        "Arial 16 bold"), fg="white", bg="#5b5b5c")
+        jobtype_txt.grid(row=1, column=3)
+        
+        jobtype_default = StringVar()
+        jobtype_default.set("Select Job Type")
+        
+        job_types = ["monday", "tuesday", "wednesday"]
+        
+        jobtype_entry = OptionMenu(root, jobtype_default, *job_types)
+        jobtype_entry.grid(row=3, column=3)
+
+        spacer1 = Label(frame, text="", bg="#5b5b5c")
+        spacer1.grid(row=4, column=3)
+
+        jobstatus_txt = Label(root, text="Job Status", font=("Arial 16 bold"), fg="white", bg="#5b5b5c")
+        jobstatus_txt.grid(row=5, column=3)
+        
+        jobstatus_default = StringVar()
+        jobstatus_default.set("Select Job Status")
+        
+        job_statuses = ["started", "half-way through", "finished"]
+        
+        jobstatus_entry = OptionMenu(root, jobstatus_default, *job_statuses)
+        jobstatus_entry.grid(row=6, column=3)
+
+     
 
 add_job()
+
 
 root.mainloop()
