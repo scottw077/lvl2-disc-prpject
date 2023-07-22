@@ -128,6 +128,7 @@ def login_process(username, password):
         position = users.index(username)
         if password == userpass[position][1]:
             print("correct")   
+            main_menu(username)
         else:
             messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
     else:
@@ -135,7 +136,7 @@ def login_process(username, password):
 
 
 
-def main_menu():
+def main_menu(username):
     spacer1 = Label(root, text="", bg="#5b5b5c")
     spacer1.grid(row=0, column=3)
     
@@ -270,7 +271,6 @@ def add_job_process(name, email, phnenum, address, job_type, job_status, staff, 
 
 
 
-add_job()
-
+login()
 
 root.mainloop()
