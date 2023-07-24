@@ -274,9 +274,10 @@ class add_job:
 
         def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame):
             new_job = [name, email, phnenum, address, job_type, job_status, staff]
+            print(new_job)
             with open("jobs.json", "r") as h:
                 existing_jobs = json.load(h)
-            
+
             existing_jobs.append(new_job)
             
             with open("jobs.json", "w") as j:
