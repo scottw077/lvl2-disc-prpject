@@ -140,21 +140,34 @@ class login:
 
 class main_menu:
     def __init__(self, master):
-        self.root = master
-        self.spacer1 = Label(root, text="", bg="#5b5b5c")
-        self.spacer1.grid(row=0, column=3)
-        
-        self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=("Arial 18 bold"), borderwidth=6, command=self.add_job_command)
-        self.add_job_btn.grid(row=1, column=3)
+        self.root = master 
+        self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.destroy)
+        self.add_job_btn.place(x=275, y=22)
 
-        self.staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=("Arial 18 bold"), borderwidth=6)
-        self.staff_tracker_btn.grid(row=1, column=2)
+        self.staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6)
+        self.staff_tracker_btn.place(x=20, y=22)
+
+        self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6)
+        self.create_invoice_btn.place(x=480, y=22)
     
-    def add_job_command(self):
-        self.spacer1.destroy()
+        with open("jobs.json") as k:
+            jobs = json.load(k)
+
+
+    def destroy(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
-        add_job(self.root)
+        self.create_invoice_btn.destroy()
+        self.app = add_job(root)
+        # if mode == "add job":
+        #     add_job(self.root)
+        
+        # elif mode == "staff tracker":
+        #     staff_tracker(self.root)
+       
+        # elif mode == "create invoice":
+        #     create_invoice(self.root)
+
 
 
 class add_job:
@@ -280,6 +293,8 @@ class add_job:
 
             existing_jobs.append(new_job)
             
+            print(existing_jobs)
+
             with open("jobs.json", "w") as j:
                 json.dump(existing_jobs, j)
             messagebox.showinfo("Success!", "Sucessfully Added Job!")
