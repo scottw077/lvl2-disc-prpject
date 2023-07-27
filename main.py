@@ -141,32 +141,36 @@ class login:
 class main_menu:
     def __init__(self, master):
         self.root = master 
-        self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.destroy)
+        self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.add_job)
         self.add_job_btn.place(x=275, y=22)
 
-        self.staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6)
+        self.staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.staff_tracker)
         self.staff_tracker_btn.place(x=20, y=22)
 
-        self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6)
+        self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
     
         with open("jobs.json") as k:
             jobs = json.load(k)
 
 
-    def destroy(self):
+    def add_job(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.app = add_job(root)
-        # if mode == "add job":
-        #     add_job(self.root)
-        
-        # elif mode == "staff tracker":
-        #     staff_tracker(self.root)
-       
-        # elif mode == "create invoice":
-        #     create_invoice(self.root)
+    
+    def staff_tracker(self):
+        self.add_job_btn.destroy()
+        self.staff_tracker_btn.destroy()
+        self.create_invoice_btn.destroy()
+        self.app = staff_tracker(root)
+
+    def create_invoice(self):
+        self.add_job_btn.destroy()
+        self.staff_tracker_btn.destroy()
+        self.create_invoice_btn.destroy()
+
 
 
 
@@ -301,7 +305,16 @@ class add_job:
             frame.grid_forget()
             main_menu(root)
 
+class staff_tracker:
+    def __init__(self, master):
+        self.root = master
+        main_menu_btn()
+        
 
+def main_menu_btn():
+    main_menu_return = Button(root, text="Return to Main Menu",padx=2, pady=2, font=("Arial 8 bold"), command=lambda: main())
+    main_menu_return.place(x=665, y=15)
+        
 
 
 def main():
