@@ -154,6 +154,7 @@ class main_menu:
             jobs = json.load(k)
 
 
+
     def add_job(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
@@ -290,15 +291,12 @@ class add_job:
                 add_job_btn.grid(row=11, column=3)
 
         def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame):
-            new_job = [name, email, phnenum, address, job_type, job_status, staff]
-            print(new_job)
             with open("jobs.json", "r") as h:
                 existing_jobs = json.load(h)
-
-            existing_jobs.append(new_job)
+            job_num = existing_jobs[-1][0]
             
-            print(existing_jobs)
-
+            new_job = [job_num, name, email, phnenum, address, job_type, job_status, staff]
+            existing_jobs.append(new_job)
             with open("jobs.json", "w") as j:
                 json.dump(existing_jobs, j)
             messagebox.showinfo("Success!", "Sucessfully Added Job!")
@@ -308,13 +306,29 @@ class add_job:
 class staff_tracker:
     def __init__(self, master):
         self.root = master
-        main_menu_btn()
-        
+        self.main_menu_return = Button(root, text="Return to Main Menu",padx=2, pady=2, font=("Arial 8 bold"), command=self.main_menu_btn)
+        self.main_menu_return.place(x=665, y=15)
+        self.add_staff = Button(root, text= "Add Staff", padx=2, pady=2, font=("Arial 8 bold"))
+        self.add_staff.place(x=10, y=15)
 
-def main_menu_btn():
-    main_menu_return = Button(root, text="Return to Main Menu",padx=2, pady=2, font=("Arial 8 bold"), command=lambda: main())
-    main_menu_return.place(x=665, y=15)
+        with open("jobs.json") as d:
+            jobs = json.load(d)
         
+        total_rows = len(jobs)
+        total_columns = len(jobs[0])
+        
+        for i in range(total_rows):
+            for j in range(total_columns):
+                 
+                self.e = Entry(root, width=20, fg='blue',
+                               font=('Arial',16,'bold'))
+                 
+                self.e.grid(row=i, column=j)
+                self.e.insert(END, jobs[i][j])
+
+    def main_menu_btn(self):
+        self.main_menu_return.destroy()
+        main_menu(root)           
 
 
 def main():
