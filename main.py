@@ -8,8 +8,9 @@ root.geometry("800x450")
 root.configure(bg="#5b5b5c")
 root.columnconfigure(3, weight=1)
 
+
 class signup:
-    def __init__(self,master):
+    def __init__(self, master):
         self.root = master
         signuptxt = Label(root, text="Sign Up", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
@@ -43,13 +44,12 @@ class signup:
         spacer3.grid(row=9, column=3)
 
         sign_upbutton = Button(root, text="Sign Up", padx=30,
-                            pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process
-                            (username_entry.get(), password.get(), confirmpassword.get()))
+                               pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process
+                               (username_entry.get(), password.get(), confirmpassword.get()))
         sign_upbutton.grid(row=10, column=3)
 
+        def signup_process(username, pwd, confirmpwd):
 
-        def signup_process(self,username, pwd, confirmpwd):
-        
             with open("usernames.json") as c:
                 userpass = json.load(c)
                 users = [user[0]for user in userpass]
@@ -69,7 +69,7 @@ class signup:
 
             elif pwd != confirmpwd:
                 messagebox.showerror("An error occured",
-                                    "Error, Passwords must match!")
+                                     "Error, Passwords must match!")
 
             elif username in users:
                 messagebox.showinfo("Username already Taken!", "The username you have "
@@ -82,8 +82,9 @@ class signup:
                     json.dump(userpass, j)
                 messagebox.showinfo("Success!", "Sucessfully Signed Up")
 
+
 class login:
-    def __init__(self,master):
+    def __init__(self, master):
         self.root = master
         logintxt = Label(root, text="Login", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
@@ -92,9 +93,6 @@ class login:
         usertxt = Label(root, text="Username:", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
         usertxt.grid(row=1, column=3)
-        
-        global user_entry
-
         user_entry = Entry(root, width=20, justify="center")
         user_entry.grid(row=2, column=3)
 
@@ -111,10 +109,9 @@ class login:
         spacer2.grid(row=6, column=3)
 
         login_button = Button(root, text="Login", padx=30,
-                            pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
-                            (user_entry.get(), pwd_entry.get()))
+                              pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
+                              (user_entry.get(), pwd_entry.get()))
         login_button.grid(row=9, column=3)
-    
 
         def login_process(username, password):
             with open("usernames.json") as c:
@@ -126,41 +123,44 @@ class login:
 
             elif "" == password:
                 messagebox.showinfo("Entry Box Empty!", "Empty Password box!")
-            
+
             elif username in users:
                 position = users.index(username)
                 if password == userpass[position][1]:
-                    print("correct")   
+                    print("correct")
                     main_menu(username)
                 else:
-                    messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
+                    messagebox.showerror(
+                        "An error occured", "Username or Password is incorrect, please try again")
             else:
-                messagebox.showerror("An error occured", "Username or Password is incorrect, please try again")
+                messagebox.showerror(
+                    "An error occured", "Username or Password is incorrect, please try again")
 
 
 class main_menu:
     def __init__(self, master):
-        self.root = master 
-        self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.add_job)
+        self.root = master
+        self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=(
+            "Arial 14 bold"), borderwidth=6, command=self.add_job)
         self.add_job_btn.place(x=275, y=22)
 
-        self.staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.staff_tracker)
+        self.staff_tracker_btn = Button(root, text="Staff Tracker", padx=30, pady=10, font=(
+            "Arial 14 bold"), borderwidth=6, command=self.staff_tracker)
         self.staff_tracker_btn.place(x=20, y=22)
 
-        self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=("Arial 14 bold"), borderwidth=6, command=self.create_invoice)
+        self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=(
+            "Arial 14 bold"), borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
-    
+
         with open("jobs.json") as k:
             jobs = json.load(k)
-
-
 
     def add_job(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.app = add_job(root)
-    
+
     def staff_tracker(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
@@ -173,14 +173,12 @@ class main_menu:
         self.create_invoice_btn.destroy()
 
 
-
-
 class add_job:
     def __init__(self, master):
         self.root = master
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
-        
+
         addjobtxt = Label(frame, text="Add Job", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
         addjobtxt.grid(row=1, column=3)
@@ -221,27 +219,31 @@ class add_job:
         spacer4 = Label(frame, text="", bg="#5b5b5c")
         spacer4.grid(row=13, column=3)
 
-        next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job2(self, name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
+        next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job2(
+            self, name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
         next_btn.grid(row=14, column=3)
-
-
 
         def add_job2(self, name, email, phnenum, address, frame):
             if "@" not in email or "." not in email:
-                messagebox.showerror("An error occured", "Email Address is not valid, please try again")
-            
+                messagebox.showerror(
+                    "An error occured", "Email Address is not valid, please try again")
+
             elif phnenum.isalpha():
-                messagebox.showerror("An error occured", "Phone number cannot contain letters")
+                messagebox.showerror("An error occured",
+                                     "Phone number cannot contain letters")
 
             elif name == "":
-                messagebox.showinfo("Entry Box Empty!", "Empty Client's Name Box! Please enter the client's name")
-            
+                messagebox.showinfo(
+                    "Entry Box Empty!", "Empty Client's Name Box! Please enter the client's name")
+
             elif phnenum == "":
-                messagebox.showinfo("Entry Box Empty!", "Empty Client's Phone Number Box! Please enter the client's phone number")
-            
+                messagebox.showinfo(
+                    "Entry Box Empty!", "Empty Client's Phone Number Box! Please enter the client's phone number")
+
             elif address == "":
-                messagebox.showinfo("Entry Box Empty!", "Empty Client's Address Box! Please enter the client's address")
-            
+                messagebox.showinfo(
+                    "Entry Box Empty!", "Empty Client's Address Box! Please enter the client's address")
+
             else:
                 frame.grid_forget()
 
@@ -249,11 +251,11 @@ class add_job:
                 frame1.grid(row=0, column=3)
 
                 addjobtxt = Label(frame1, text="Add Job", font=(
-                                "Impact 60"), fg="white", bg="#5b5b5c")
+                    "Impact 60"), fg="white", bg="#5b5b5c")
                 addjobtxt.grid(row=1, column=3)
 
                 jobtype_txt = Label(frame1, text="Job Type", font=(
-                "Arial 16 bold"), fg="white", bg="#5b5b5c")
+                    "Arial 16 bold"), fg="white", bg="#5b5b5c")
                 jobtype_txt.grid(row=2, column=3)
                 jobtype_default = StringVar()
                 jobtype_default.set("Select Job Type")
@@ -264,19 +266,21 @@ class add_job:
                 spacer1 = Label(frame1, text="", bg="#5b5b5c")
                 spacer1.grid(row=4, column=3)
 
-
-                jobstatus_txt = Label(frame1, text="Job Status", font=("Arial 16 bold"), fg="white", bg="#5b5b5c")
+                jobstatus_txt = Label(frame1, text="Job Status", font=(
+                    "Arial 16 bold"), fg="white", bg="#5b5b5c")
                 jobstatus_txt.grid(row=5, column=3)
                 jobstatus_default = StringVar()
                 jobstatus_default.set("Select Job Status")
                 job_statuses = ["started", "half-way through", "finished"]
-                jobstatus_entry = OptionMenu(frame1, jobstatus_default, *job_statuses)
+                jobstatus_entry = OptionMenu(
+                    frame1, jobstatus_default, *job_statuses)
                 jobstatus_entry.grid(row=6, column=3)
 
                 spacer2 = Label(frame1, text="", bg="#5b5b5c")
                 spacer2.grid(row=7, column=3)
 
-                staff_txt = Label(frame1, text="Staff", font=("Arial 16 bold"), fg="white", bg="#5b5b5c")
+                staff_txt = Label(frame1, text="Staff", font=(
+                    "Arial 16 bold"), fg="white", bg="#5b5b5c")
                 staff_txt.grid(row=8, column=3)
                 staff_default = StringVar()
                 staff_default.set("Select Staff")
@@ -287,7 +291,8 @@ class add_job:
                 spacer3 = Label(frame1, text="", bg="#5b5b5c")
                 spacer3.grid(row=10, column=3)
 
-                add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, font=("Arial 12 bold"), command= lambda: add_job_process(name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), staff_default.get(), frame1))
+                add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(
+                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), staff_default.get(), frame1))
                 add_job_btn.grid(row=11, column=3)
 
         def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame):
@@ -296,7 +301,8 @@ class add_job:
             job_num = int(existing_jobs[-1][0])
             job_num += 1
 
-            new_job = [job_num, name, email, phnenum, address, job_type, job_status, staff]
+            new_job = [job_num, name, email, phnenum,
+                       address, job_type, job_status, staff]
             existing_jobs.append(new_job)
             with open("jobs.json", "w") as j:
                 json.dump(existing_jobs, j)
@@ -304,37 +310,78 @@ class add_job:
             frame.grid_forget()
             main_menu(root)
 
+
 class staff_tracker:
     def __init__(self, master):
         self.root = master
-        self.main_menu_return = Button(root, text="Return to Main Menu",padx=2, pady=2, font=("Arial 8 bold"), command=self.main_menu_btn)
+        self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.main_menu_btn)
         self.main_menu_return.place(x=665, y=15)
-        self.add_staff = Button(root, text= "Add Staff", padx=2, pady=2, font=("Arial 8 bold"))
+        self.add_staff = Button(root, text="Add Staff", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.add_staff)
         self.add_staff.place(x=10, y=15)
 
         with open("jobs.json") as d:
             jobs = json.load(d)
-        
+
         total_rows = len(jobs)
         total_columns = len(jobs[0])
-        
-        for i in range(total_rows):
-            for j in range(total_columns):
-                 
-                self.e = Entry(root, width=20, fg='blue',
-                               font=('Arial',16,'bold'))
-                 
-                self.e.grid(row=i, column=j)
-                self.e.insert(END, jobs[i][j])
+
+        # for i in range(total_rows):
+        # for j in range(total_columns):
+
+        # self.e = Entry(root, width=20, fg='blue',
+        # font=('Arial',16,'bold'))
+
+        # self.e.grid(row=i, column=j)
+        # self.e.insert(END, jobs[i][j])
+
+    def add_staff(self):
+        self.add_staff.destroy()
+        self.main_menu_return.destroy()
+        self.addstafftxt = Label(root, text="Add Staff", font=(
+            "Impact 60"), fg="white", bg="#5b5b5c")
+        self.addstafftxt.grid(row=0, column=3)
+
+        self.spacer1 = Label(root, text="", bg="#5b5b5c")
+        self.spacer1.grid(row=2, column=3)
+
+        self.spacer2 = Label(root, text="", bg="#5b5b5c")
+        self.spacer2.grid(row=3, column=3)
+
+        self.stafftxt = Label(root, text="New Staff Name:", font=(
+            "Arial 12 bold"), fg="white", bg="#5b5b5c")
+        self.stafftxt.grid(row=4, column=3)
+        self.new_staff_entry = Entry(root, width=20, justify="center")
+        self.new_staff_entry.grid(row=5, column=3)
+
+        self.spacer3 = Label(root, text="", bg="#5b5b5c")
+        self.spacer3.grid(row=6, column=3)
+
+        self.spacer4 = Label(root, text="", bg="#5b5b5c")
+        self.spacer4.grid(row=7, column=3)
+
+        self.spacer5 = Label(root, text="", bg="#5b5b5c")
+        self.spacer5.grid(row=8, column=3)
+
+        self.next_btn = Button(root, text="Add Staff", padx=30,
+                               pady=10, font=("Arial 12 bold"), borderwidth=6,  command=self.new_staff)
+        self.next_btn.grid(row=9, column=3)
+
+    def new_staff(self):
+        staff = self.new_staff_entry
+        print(staff)
 
     def main_menu_btn(self):
+        self.add_staff.destroy()
         self.main_menu_return.destroy()
-        main_menu(root)           
+        main_menu(root)
 
 
 def main():
-    main_menu(root)
+    signup(root)
     root.mainloop()
+
 
 if __name__ == '__main__':
     main()
