@@ -370,15 +370,19 @@ class staff_tracker:
 
     def new_staff(self):
         staff = self.new_staff_entry.get()
-        print("kk")
         with open("staff.json", "r") as d:
             current_staff = json.load(d)
 
-        current_staff.append(staff)
-        print(current_staff)
+        if staff in current_staff:
+            messagebox.showerror("An error occured", "Staff already exists!")
 
-        # with open("staff.json", "w") as c:
-        # json.dump(current_staff, c)
+        elif staff == "":
+            messagebox.showinfo("Entry Box Empty!",
+                                "Empty Add Staff entry box")
+
+        else:
+            with open("staff.json", "w") as c:
+                json.dump(current_staff, c)
 
         self.addstafftxt.destroy()
         self.spacer1.destroy()
