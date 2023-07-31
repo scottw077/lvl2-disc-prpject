@@ -369,8 +369,27 @@ class staff_tracker:
         self.next_btn.grid(row=9, column=3)
 
     def new_staff(self):
-        staff = self.new_staff_entry
-        print(staff)
+        staff = self.new_staff_entry.get()
+        print("kk")
+        with open("staff.json", "r") as d:
+            current_staff = json.load(d)
+
+        current_staff.append(staff)
+        print(current_staff)
+
+        # with open("staff.json", "w") as c:
+        # json.dump(current_staff, c)
+
+        self.addstafftxt.destroy()
+        self.spacer1.destroy()
+        self.spacer2.destroy()
+        self.stafftxt.destroy()
+        self.new_staff_entry.destroy()
+        self.spacer3.destroy()
+        self.spacer4.destroy()
+        self.spacer5.destroy()
+        self.next_btn.destroy()
+        staff_tracker(root)
 
     def main_menu_btn(self):
         self.add_staff.destroy()
@@ -379,7 +398,7 @@ class staff_tracker:
 
 
 def main():
-    signup(root)
+    main_menu(root)
     root.mainloop()
 
 
