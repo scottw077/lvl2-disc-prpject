@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import json
+import datetime
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -12,41 +13,42 @@ root.columnconfigure(3, weight=1)
 class signup:
     def __init__(self, master):
         self.root = master
-        signuptxt = Label(root, text="Sign Up", font=(
+        self.signuptxt = Label(root, text="Sign Up", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
-        signuptxt.grid(row=0, column=3)
+        self.signuptxt.grid(row=0, column=3)
 
-        usernametxt = Label(root, text="Create a Username", font=(
+        self.usernametxt = Label(root, text="Create a Username", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        usernametxt.grid(row=1, column=3)
-        username_entry = Entry(root, width=20, justify="center")
-        username_entry.grid(row=2, column=3)
+        self.usernametxt.grid(row=1, column=3)
+        self.username_entry = Entry(root, width=20, justify="center")
+        self.username_entry.grid(row=2, column=3)
 
-        spacer1 = Label(root, text="", bg="#5b5b5c")
-        spacer1.grid(row=3, column=3)
+        self.spacer1 = Label(root, text="", bg="#5b5b5c")
+        self.spacer1.grid(row=3, column=3)
 
-        self.pwdtxt = Label(root, text="Create a Password", font=(
+        self.pwd_txt = Label(root, text="Create a Password", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.pwdtxt.grid(row=4, column=3)
-        password = Entry(root, width=20, justify="center", show="*")
-        password.grid(row=5, column=3)
+        self.pwd_txt.grid(row=4, column=3)
+        self.password = Entry(root, width=20, justify="center", show="*")
+        self.password.grid(row=5, column=3)
 
-        spacer2 = Label(root, text="", bg="#5b5b5c")
-        spacer2.grid(row=6, column=3)
+        self.spacer2 = Label(root, text="", bg="#5b5b5c")
+        self.spacer2.grid(row=6, column=3)
 
-        confirmpwdtxt = Label(root, text="Confirm Password", font=(
+        self.confirmpwdtxt = Label(root, text="Confirm Password", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        confirmpwdtxt.grid(row=7, column=3)
-        confirmpassword = Entry(root, width=20, justify="center", show="*")
-        confirmpassword.grid(row=8, column=3)
+        self.confirmpwdtxt.grid(row=7, column=3)
+        self.confirmpassword = Entry(
+            root, width=20, justify="center", show="*")
+        self.confirmpassword.grid(row=8, column=3)
 
-        spacer3 = Label(root, text="", bg="#5b5b5c")
-        spacer3.grid(row=9, column=3)
+        self.spacer3 = Label(root, text="", bg="#5b5b5c")
+        self.spacer3.grid(row=9, column=3)
 
-        sign_upbutton = Button(root, text="Sign Up", padx=30,
-                               pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process
-                               (username_entry.get(), password.get(), confirmpassword.get()))
-        sign_upbutton.grid(row=10, column=3)
+        self.sign_upbutton = Button(root, text="Sign Up", padx=30,
+                                    pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process
+                                    (self.username_entry.get(), self.password.get(), self.confirmpassword.get()))
+        self.sign_upbutton.grid(row=10, column=3)
 
         def signup_process(username, pwd, confirmpwd):
 
@@ -81,38 +83,64 @@ class signup:
                 with open("usernames.json", "w") as j:
                     json.dump(userpass, j)
                 messagebox.showinfo("Success!", "Sucessfully Signed Up")
+                self.signuptxt.destroy()
+                self.usernametxt.destroy()
+                self.username_entry.destroy()
+                self.spacer1.destroy()
+                self.pwd_txt.destroy()
+                self.password.destroy()
+                self.spacer2.destroy()
+                self.confirmpwdtxt.destroy()
+                self.confirmpassword.destroy()
+                self.spacer3.destroy()
+                self.sign_upbutton.destroy()
+                login(root)
 
 
 class login:
     def __init__(self, master):
         self.root = master
-        logintxt = Label(root, text="Login", font=(
+        self.logintxt = Label(root, text="Login", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
-        logintxt.grid(row=0, column=3)
+        self.logintxt.grid(row=0, column=3)
 
-        usertxt = Label(root, text="Username:", font=(
+        self.usertxt = Label(root, text="Username:", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        usertxt.grid(row=1, column=3)
-        user_entry = Entry(root, width=20, justify="center")
-        user_entry.grid(row=2, column=3)
+        self.usertxt.grid(row=1, column=3)
+        self.user_entry = Entry(root, width=20, justify="center")
+        self.user_entry.grid(row=2, column=3)
 
-        spacer1 = Label(root, text="", bg="#5b5b5c")
-        spacer1.grid(row=3, column=3)
+        self.spacer1 = Label(root, text="", bg="#5b5b5c")
+        self.spacer1.grid(row=3, column=3)
 
-        pwdtxt = Label(root, text="Password:", font=(
+        self.pwdtxt = Label(root, text="Password:", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        pwdtxt.grid(row=4, column=3)
-        pwd_entry = Entry(root, width=20, justify="center", show="*")
-        pwd_entry.grid(row=5, column=3)
+        self.pwdtxt.grid(row=4, column=3)
+        self.pwd_entry = Entry(root, width=20, justify="center", show="*")
+        self.pwd_entry.grid(row=5, column=3)
 
-        spacer2 = Label(root, text="", bg="#5b5b5c")
-        spacer2.grid(row=6, column=3)
+        self.spacer2 = Label(root, text="", bg="#5b5b5c")
+        self.spacer2.grid(row=6, column=3)
 
-        login_button = Button(root, text="Login", padx=30,
-                              pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
-                              (user_entry.get(), pwd_entry.get()))
-        login_button.grid(row=9, column=3)
+        self.login_button = Button(root, text="Login", padx=30,
+                                   pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
+                                   (self.user_entry.get(), self.pwd_entry.get()))
+        self.login_button.grid(row=8, column=3)
 
+        self.spacer3 = Label(root, text="", bg="#5b5b5c")
+        self.spacer3.grid(row=9, column=3)
+
+        self.sign_up_pass_btn = Button(
+            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"), bg="#5b5b5c", fg="#2E96D1", bd=0)
+        self.sign_up_pass_btn.grid(row=10, column=3)
+
+        def sign_up_pass_through():
+            
+        
+        
+        
+        
+        
         def login_process(username, password):
             with open("usernames.json") as c:
                 userpass = json.load(c)
@@ -127,8 +155,16 @@ class login:
             elif username in users:
                 position = users.index(username)
                 if password == userpass[position][1]:
-                    print("correct")
-                    main_menu(username)
+                    self.logintxt.destroy()
+                    self.usertxt.destroy()
+                    self.user_entry.destroy()
+                    self.spacer1.destroy()
+                    self.pwdtxt.destroy()
+                    self.pwd_entry.destroy()
+                    self.spacer2.destroy()
+                    self.login_button.destroy()
+                    self.sign_up_pass_btn.destroy()
+                    main_menu(root)
                 else:
                     messagebox.showerror(
                         "An error occured", "Username or Password is incorrect, please try again")
@@ -402,7 +438,7 @@ class staff_tracker:
 
 
 def main():
-    main_menu(root)
+    login(root)
     root.mainloop()
 
 
