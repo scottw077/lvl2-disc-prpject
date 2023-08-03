@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox, ttk
 import json
 import datetime
+import bcrypt
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -195,51 +196,55 @@ class main_menu:
         self.create_invoice_btn.place(x=480, y=22)
 
         self.jobs_frame = Frame(root)
-        self.jobs_frame.place(x=20, y=100)
+        self.jobs_frame.place(x=20, y=106)
 
-        self.my_game = ttk.Treeview(self.jobs_frame, height=10)
+        style = ttk.Style()
+        style.configure("Treeview", background="#5b5b5c",
+                        fieldbackground="5b5b5c")
 
-        self.my_game['columns'] = ('job_num', 'name',
-                                   'email', 'phe_num', 'address', "job_type", "job_status", "staff")
+        self.jobs = ttk.Treeview(self.jobs_frame, height=15)
 
-        self.my_game.column("#0", width=0,  stretch=NO)
-        self.my_game.column("job_num", anchor=CENTER, width=42)
-        self.my_game.column("name", anchor=CENTER, width=70)
-        self.my_game.column("email", anchor=CENTER, width=120)
-        self.my_game.column("phe_num", anchor=CENTER, width=90)
-        self.my_game.column("address", anchor=CENTER, width=100)
-        self.my_game.column("job_type", anchor=CENTER, width=65)
-        self.my_game.column("job_status", anchor=CENTER, width=70)
-        self.my_game.column("staff", anchor=CENTER, width=50)
+        self.jobs['columns'] = ('job_num', 'name',
+                                'email', 'phe_num', 'address', "job_type", "job_status", "staff")
 
-        self.my_game.heading("#0", text="", anchor=CENTER)
-        self.my_game.heading("job_num", text="Job #",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("name", text="Client Name",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("email", text="Email",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("phe_num", text="Phone Number",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("address", text="Address",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("job_type", text="Job Type",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("job_status", text="Job Status",
-                             anchor=CENTER, font=("Arial 12 bold"))
-        self.my_game.heading("staff", text="Staff",
-                             anchor=CENTER, font=("Arial 12 bold"))
+        self.jobs.column("#0", width=0,  stretch=NO)
+        self.jobs.column("job_num", anchor=CENTER, width=42)
+        self.jobs.column("name", anchor=CENTER, width=70)
+        self.jobs.column("email", anchor=CENTER, width=120)
+        self.jobs.column("phe_num", anchor=CENTER, width=90)
+        self.jobs.column("address", anchor=CENTER, width=100)
+        self.jobs.column("job_type", anchor=CENTER, width=65)
+        self.jobs.column("job_status", anchor=CENTER, width=70)
+        self.jobs.column("staff", anchor=CENTER, width=50)
+
+        self.jobs.heading("#0", text="", anchor=CENTER)
+        self.jobs.heading("job_num", text="Job #",
+                          anchor=CENTER)
+        self.jobs.heading("name", text="Client Name",
+                          anchor=CENTER)
+        self.jobs.heading("email", text="Email",
+                          anchor=CENTER)
+        self.jobs.heading("phe_num", text="Phone Number",
+                          anchor=CENTER)
+        self.jobs.heading("address", text="Address",
+                          anchor=CENTER)
+        self.jobs.heading("job_type", text="Job Type",
+                          anchor=CENTER)
+        self.jobs.heading("job_status", text="Job Status",
+                          anchor=CENTER)
+        self.jobs.heading("staff", text="Staff",
+                          anchor=CENTER)
 
         with open("jobs.json") as k:
             jobs = json.load(k)
 
         num = 0
         for i in jobs:
-            self.my_game.insert(parent='', index='end', iid=num, text='',
-                                values=jobs[num])
+            self.jobs.insert(parent='', index='end', iid=num, text='',
+                             values=jobs[num])
             num += 1
 
-        self.my_game.grid(row=1, column=3)
+        self.jobs.grid(row=1, column=3)
 
     def add_job(self):
         self.add_job_btn.destroy()
@@ -406,9 +411,9 @@ class staff_tracker:
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_btn)
         self.main_menu_return.place(x=665, y=15)
-        self.add_staff = Button(root, text="Add Staff", padx=2, pady=2, font=(
-            "Arial 8 bold"), command=self.add_staff)
-        self.add_staff.place(x=10, y=15)
+        self.addstaff = Button(root, text="Add Staff", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.addstaff)
+        self.addstaff.place(x=10, y=15)
 
         with open("jobs.json") as d:
             jobs = json.load(d)
@@ -426,7 +431,7 @@ class staff_tracker:
         # self.e.insert(END, jobs[i][j])
 
     def add_staff(self):
-        self.add_staff.destroy()
+        self.addstaff.destroy()
         self.main_menu_return.destroy()
         self.addstafftxt = Label(root, text="Add Staff", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
@@ -485,7 +490,7 @@ class staff_tracker:
         staff_tracker(root)
 
     def main_menu_btn(self):
-        self.add_staff.destroy()
+        self.addstaff.destroy()
         self.main_menu_return.destroy()
         main_menu(root)
 
