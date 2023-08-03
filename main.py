@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import json
 import datetime
 root = Tk()
@@ -131,16 +131,9 @@ class login:
         self.spacer3.grid(row=9, column=3)
 
         self.sign_up_pass_btn = Button(
-            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"), bg="#5b5b5c", fg="#2E96D1", bd=0)
+            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"), bg="#5b5b5c", fg="#2E96D1", bd=0, command=self.sign_up_pass_through)
         self.sign_up_pass_btn.grid(row=10, column=3)
 
-        def sign_up_pass_through():
-            
-        
-        
-        
-        
-        
         def login_process(username, password):
             with open("usernames.json") as c:
                 userpass = json.load(c)
@@ -165,12 +158,25 @@ class login:
                     self.login_button.destroy()
                     self.sign_up_pass_btn.destroy()
                     main_menu(root)
+
                 else:
                     messagebox.showerror(
                         "An error occured", "Username or Password is incorrect, please try again")
             else:
                 messagebox.showerror(
                     "An error occured", "Username or Password is incorrect, please try again")
+
+    def sign_up_pass_through(self):
+        self.logintxt.destroy()
+        self.usertxt.destroy()
+        self.user_entry.destroy()
+        self.spacer1.destroy()
+        self.pwdtxt.destroy()
+        self.pwd_entry.destroy()
+        self.spacer2.destroy()
+        self.login_button.destroy()
+        self.sign_up_pass_btn.destroy()
+        signup(root)
 
 
 class main_menu:
@@ -188,25 +194,72 @@ class main_menu:
             "Arial 14 bold"), borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
 
+        self.jobs_frame = Frame(root)
+        self.jobs_frame.place(x=20, y=100)
+
+        self.my_game = ttk.Treeview(self.jobs_frame, height=10)
+
+        self.my_game['columns'] = ('job_num', 'name',
+                                   'email', 'phe_num', 'address', "job_type", "job_status", "staff")
+
+        self.my_game.column("#0", width=0,  stretch=NO)
+        self.my_game.column("job_num", anchor=CENTER, width=42)
+        self.my_game.column("name", anchor=CENTER, width=70)
+        self.my_game.column("email", anchor=CENTER, width=120)
+        self.my_game.column("phe_num", anchor=CENTER, width=90)
+        self.my_game.column("address", anchor=CENTER, width=100)
+        self.my_game.column("job_type", anchor=CENTER, width=65)
+        self.my_game.column("job_status", anchor=CENTER, width=70)
+        self.my_game.column("staff", anchor=CENTER, width=50)
+
+        self.my_game.heading("#0", text="", anchor=CENTER)
+        self.my_game.heading("job_num", text="Job #",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("name", text="Client Name",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("email", text="Email",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("phe_num", text="Phone Number",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("address", text="Address",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("job_type", text="Job Type",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("job_status", text="Job Status",
+                             anchor=CENTER, font=("Arial 12 bold"))
+        self.my_game.heading("staff", text="Staff",
+                             anchor=CENTER, font=("Arial 12 bold"))
+
         with open("jobs.json") as k:
             jobs = json.load(k)
+
+        num = 0
+        for i in jobs:
+            self.my_game.insert(parent='', index='end', iid=num, text='',
+                                values=jobs[num])
+            num += 1
+
+        self.my_game.grid(row=1, column=3)
 
     def add_job(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
+        self.jobs_frame.destroy()
         self.app = add_job(root)
 
     def staff_tracker(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
+        self.jobs_frame.destroy()
         self.app = staff_tracker(root)
 
     def create_invoice(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
+        self.jobs_frame.destroy()
 
 
 class add_job:
