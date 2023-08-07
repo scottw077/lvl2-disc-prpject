@@ -135,7 +135,7 @@ class login:
         self.spacer3.grid(row=9, column=3)
 
         self.sign_up_pass_btn = Button(
-            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"), bg="#5b5b5c", fg="#2E96D1", bd=0, command=self.sign_up_pass_through)
+            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"), bg="#5b5b5c", fg="#0381ff", bd=0, command=self.sign_up_pass_through)
         self.sign_up_pass_btn.grid(row=10, column=3)
 
         def login_process(username, password):
