@@ -78,7 +78,10 @@ class signup:
                 messagebox.showinfo("Username already Taken!", "The username you have "
                                     "inputed is already taken! Please choose a different username")
             else:
-                new_user = [username, pwd]
+                salt = bcrypt.gensalt()
+                hashed_pwd = bcrypt.hashpw(pwd, salt)
+
+                new_user = [username, hashed_pwd]
                 userpass.append(new_user)
 
                 with open("usernames.json", "w") as j:
