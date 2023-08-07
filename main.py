@@ -199,23 +199,25 @@ class main_menu:
         self.jobs_frame.place(x=20, y=106)
 
         style = ttk.Style()
-        style.configure("Treeview", background="#5b5b5c",
-                        fieldbackground="5b5b5c")
+        style.configure("Treeview", background="#5b5b5c")
 
-        self.jobs = ttk.Treeview(self.jobs_frame, height=15)
+        with open("jobs.json") as k:
+            jobs = json.load(k)
+
+        self.jobs = ttk.Treeview(self.jobs_frame, height=len(jobs))
 
         self.jobs['columns'] = ('job_num', 'name',
                                 'email', 'phe_num', 'address', "job_type", "job_status", "staff")
 
         self.jobs.column("#0", width=0,  stretch=NO)
         self.jobs.column("job_num", anchor=CENTER, width=42)
-        self.jobs.column("name", anchor=CENTER, width=70)
+        self.jobs.column("name", anchor=CENTER, width=110)
         self.jobs.column("email", anchor=CENTER, width=120)
         self.jobs.column("phe_num", anchor=CENTER, width=90)
         self.jobs.column("address", anchor=CENTER, width=100)
-        self.jobs.column("job_type", anchor=CENTER, width=65)
-        self.jobs.column("job_status", anchor=CENTER, width=70)
-        self.jobs.column("staff", anchor=CENTER, width=50)
+        self.jobs.column("job_type", anchor=CENTER, width=100)
+        self.jobs.column("job_status", anchor=CENTER, width=110)
+        self.jobs.column("staff", anchor=CENTER, width=88)
 
         self.jobs.heading("#0", text="", anchor=CENTER)
         self.jobs.heading("job_num", text="Job #",
@@ -235,10 +237,8 @@ class main_menu:
         self.jobs.heading("staff", text="Staff",
                           anchor=CENTER)
 
-        with open("jobs.json") as k:
-            jobs = json.load(k)
-
         num = 0
+
         for i in jobs:
             self.jobs.insert(parent='', index='end', iid=num, text='',
                              values=jobs[num])
