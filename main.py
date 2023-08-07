@@ -82,6 +82,7 @@ class signup:
                 encoded_pwd = pwd.encode("utf-8")
                 hashed_pwd = bcrypt.hashpw(encoded_pwd, salt)
                 print(hashed_pwd)
+                print(type(hashed_pwd))
 
                 new_user = [username, hashed_pwd]
                 userpass.append(new_user)
