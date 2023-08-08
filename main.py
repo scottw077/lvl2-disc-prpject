@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox, ttk
 import json
 import datetime
-import bcrypt
+import hashlib
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -78,11 +78,10 @@ class signup:
                 messagebox.showinfo("Username already Taken!", "The username you have "
                                     "inputed is already taken! Please choose a different username")
             else:
-                salt = bcrypt.gensalt()
                 encoded_pwd = pwd.encode("utf-8")
                 hashed_pwd = bcrypt.hashpw(encoded_pwd, salt)
                 new_user = [username, str(hashed_pwd)]
-                userpass.append(new_user) 
+                userpass.append(new_user)
 
                 with open("usernames.json", "w") as j:
                     json.dump(userpass, j)
@@ -151,9 +150,12 @@ class login:
 
             elif username in users:
                 position = users.index(username)
-                
+                pw = userpass[position][1].encode("utf-8")
+                salt = bcrypt.gensalt()
+                hash = bcrypt.hashpw(pw, salt)
+
                 print(userpass[position][1])
-                if bcrypt.checkpw(password.encode("utf-8"), userpass[position][1].encode("utf-8")) == True:
+                if bcrypt.checkpw(password.encode("utf-8"), hash) == True:
                     self.logintxt.destroy()
                     self.usertxt.destroy()
                     self.user_entry.destroy()
