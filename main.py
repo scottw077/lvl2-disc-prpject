@@ -79,7 +79,7 @@ class signup:
                                     "inputed is already taken! Please choose a different username")
             else:
                 encoded_pwd = pwd.encode("utf-8")
-                hashed_pwd = bcrypt.hashpw(encoded_pwd, salt)
+                hashed_pwd = hashlib.sha256(encoded_pwd)
                 new_user = [username, str(hashed_pwd)]
                 userpass.append(new_user)
 
