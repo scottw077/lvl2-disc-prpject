@@ -82,7 +82,7 @@ class signup:
                 encoded_pwd = pwd.encode("utf-8")
                 hashed_pwd = bcrypt.hashpw(encoded_pwd, salt)
                 new_user = [username, str(hashed_pwd)]
-                userpass.append(new_user)
+                userpass.append(new_user) 
 
                 with open("usernames.json", "w") as j:
                     json.dump(userpass, j)
@@ -151,7 +151,9 @@ class login:
 
             elif username in users:
                 position = users.index(username)
-                if password == userpass[position][1]:
+                
+                print(userpass[position][1])
+                if bcrypt.checkpw(password.encode("utf-8"), userpass[position][1].encode("utf-8")) == True:
                     self.logintxt.destroy()
                     self.usertxt.destroy()
                     self.user_entry.destroy()
