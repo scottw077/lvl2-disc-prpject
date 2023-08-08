@@ -79,7 +79,7 @@ class signup:
                                     "inputed is already taken! Please choose a different username")
             else:
                 encoded_pwd = pwd.encode("utf-8")
-                hashed_pwd = hashlib.sha256(encoded_pwd)
+                hashed_pwd = hashlib.sha256(encoded_pwd).hexdigest()
                 new_user = [username, str(hashed_pwd)]
                 userpass.append(new_user)
 
@@ -150,12 +150,10 @@ class login:
 
             elif username in users:
                 position = users.index(username)
-                pw = userpass[position][1].encode("utf-8")
-                salt = bcrypt.gensalt()
-                hash = bcrypt.hashpw(pw, salt)
+                pw = str(password).encode("utf-8")
+                entry_hashed_pw = hashlib.sha256(pw).hexdigest()
 
-                print(userpass[position][1])
-                if bcrypt.checkpw(password.encode("utf-8"), hash) == True:
+                if entry_hashed_pw == userpass[position][1]:
                     self.logintxt.destroy()
                     self.usertxt.destroy()
                     self.user_entry.destroy()
@@ -165,7 +163,7 @@ class login:
                     self.spacer2.destroy()
                     self.login_button.destroy()
                     self.sign_up_pass_btn.destroy()
-                    main_menu(root)
+                    main_menu(root, username)
 
                 else:
                     messagebox.showerror(
@@ -188,7 +186,7 @@ class login:
 
 
 class main_menu:
-    def __init__(self, master):
+    def __init__(self, master, username):
         self.root = master
         self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=(
             "Arial 14 bold"), borderwidth=6, command=self.add_job)
@@ -201,6 +199,10 @@ class main_menu:
         self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=(
             "Arial 14 bold"), borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
+
+        self.current_user = Label(
+            root, text=username, font=("Arial 12"), fg="white", justify="right", anchor="e", width=8)
+        self.current_user.place(x=710, y=420)
 
         self.jobs_frame = Frame(root)
         self.jobs_frame.place(x=20, y=106)
@@ -258,14 +260,14 @@ class main_menu:
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        self.app = add_job(root)
+        self.app = add_job(root, username)
 
     def staff_tracker(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        self.app = staff_tracker(root)
+        self.app = staff_tracker(root, username)
 
     def create_invoice(self):
         self.add_job_btn.destroy()
@@ -409,7 +411,7 @@ class add_job:
                 json.dump(existing_jobs, j)
             messagebox.showinfo("Success!", "Sucessfully Added Job!")
             frame.grid_forget()
-            main_menu(root)
+            main_menu(root, username)
 
 
 class staff_tracker:
@@ -494,12 +496,12 @@ class staff_tracker:
         self.spacer4.destroy()
         self.spacer5.destroy()
         self.next_btn.destroy()
-        staff_tracker(root)
+        staff_tracker(root, username)
 
     def main_menu_btn(self):
         self.addstaff.destroy()
         self.main_menu_return.destroy()
-        main_menu(root)
+        main_menu(root, username)
 
 
 def main():
