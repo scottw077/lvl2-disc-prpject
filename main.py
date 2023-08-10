@@ -134,7 +134,8 @@ class login:
         self.spacer3.grid(row=9, column=3)
 
         self.sign_up_pass_btn = Button(
-            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"), bg="#5b5b5c", fg="#0381ff", bd=0, command=self.sign_up_pass_through)
+            root, text="Don't have an account? Press here to Sign Up", font=("Arial 12 bold"),
+            bg="#5b5b5c", fg="#0381ff", bd=0, command=self.sign_up_pass_through)
         self.sign_up_pass_btn.grid(row=10, column=3)
 
         def login_process(username, password):
@@ -188,6 +189,7 @@ class login:
 class main_menu:
     def __init__(self, master, username):
         self.root = master
+        self.username = username
         self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=(
             "Arial 14 bold"), borderwidth=6, command=self.add_job)
         self.add_job_btn.place(x=275, y=22)
@@ -207,7 +209,13 @@ class main_menu:
         style.configure("Treeview", background="#5b5b5c")
 
         with open("jobs.json") as k:
-            jobs = json.load(k)
+            all_jobs = json.load(k)
+
+        jobs = []
+
+        for job in all_jobs:
+            if job[0] == username:
+                jobs.append(job[1:])
 
         self.jobs = ttk.Treeview(self.jobs_frame, height=len(jobs))
 
@@ -256,14 +264,14 @@ class main_menu:
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        self.app = add_job(root, username)
+        self.app = add_job(root, self.username)
 
     def staff_tracker(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        self.app = staff_tracker(root, username)
+        self.app = staff_tracker(root, self.username)
 
     def create_invoice(self):
         self.add_job_btn.destroy()
@@ -273,7 +281,7 @@ class main_menu:
 
 
 class add_job:
-    def __init__(self, master):
+    def __init__(self, master, username):
         self.root = master
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
@@ -319,10 +327,10 @@ class add_job:
         spacer4.grid(row=13, column=3)
 
         next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job2(
-            self, name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
+            name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
         next_btn.grid(row=14, column=3)
 
-        def add_job2(self, name, email, phnenum, address, frame):
+        def add_job2(name, email, phnenum, address, frame):
             if "@" not in email or "." not in email:
                 messagebox.showerror(
                     "An error occured", "Email Address is not valid, please try again")
@@ -397,10 +405,13 @@ class add_job:
         def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame):
             with open("jobs.json", "r") as h:
                 existing_jobs = json.load(h)
-            job_num = int(existing_jobs[-1][0])
-            job_num += 1
 
-            new_job = [job_num, name, email, phnenum,
+            job_num = 0
+            for job in existing_jobs:
+                if job[0] == username:
+                    job_num += 1
+
+            new_job = [username, job_num, name, email, phnenum,
                        address, job_type, job_status, staff]
             existing_jobs.append(new_job)
             with open("jobs.json", "w") as j:
@@ -411,29 +422,18 @@ class add_job:
 
 
 class staff_tracker:
-    def __init__(self, master):
+    def __init__(self, master, username):
+        self.username = username
         self.root = master
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_btn)
         self.main_menu_return.place(x=665, y=15)
         self.addstaff = Button(root, text="Add Staff", padx=2, pady=2, font=(
-            "Arial 8 bold"), command=self.addstaff)
+            "Arial 8 bold"), command=self.add_staff)
         self.addstaff.place(x=10, y=15)
 
         with open("jobs.json") as d:
             jobs = json.load(d)
-
-        total_rows = len(jobs)
-        total_columns = len(jobs[0])
-
-        # for i in range(total_rows):
-        # for j in range(total_columns):
-
-        # self.e = Entry(root, width=20, fg='blue',
-        # font=('Arial',16,'bold'))
-
-        # self.e.grid(row=i, column=j)
-        # self.e.insert(END, jobs[i][j])
 
     def add_staff(self):
         self.addstaff.destroy()
@@ -469,19 +469,28 @@ class staff_tracker:
 
     def new_staff(self):
         staff = self.new_staff_entry.get()
+        print("test1")
         with open("staff.json", "r") as d:
             current_staff = json.load(d)
 
-        if staff in current_staff:
-            messagebox.showerror("An error occured", "Staff already exists!")
+        for name in current_staff:
+            if name[0] == self.username:
+                if name[1] == staff:
+                    messagebox.showerror(
+                        "An error occured", "Staff already exists!")
 
-        elif staff == "":
+        if staff == "":
             messagebox.showinfo("Entry Box Empty!",
                                 "Empty Add Staff entry box")
 
         else:
+            new_staff = [self.username, staff]
+            current_staff.append(new_staff)
+            print(current_staff)
             with open("staff.json", "w") as c:
                 json.dump(current_staff, c)
+            messagebox.showinfo(
+                "Success!", "Successfully added {}!".format(staff))
 
         self.addstafftxt.destroy()
         self.spacer1.destroy()
@@ -492,12 +501,12 @@ class staff_tracker:
         self.spacer4.destroy()
         self.spacer5.destroy()
         self.next_btn.destroy()
-        staff_tracker(root, username)
+        staff_tracker(root, self.username)
 
     def main_menu_btn(self):
         self.addstaff.destroy()
         self.main_menu_return.destroy()
-        main_menu(root, username)
+        main_menu(root, self.username)
 
 
 def main():
