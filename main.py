@@ -200,10 +200,6 @@ class main_menu:
             "Arial 14 bold"), borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
 
-        self.current_user = Label(
-            root, text=username, font=("Arial 12"), fg="white", justify="right", anchor="e", width=8)
-        self.current_user.place(x=710, y=420)
-
         self.jobs_frame = Frame(root)
         self.jobs_frame.place(x=20, y=106)
 
