@@ -51,6 +51,14 @@ class signup:
                                     (self.username_entry.get(), self.password.get(), self.confirmpassword.get()))
         self.sign_upbutton.grid(row=10, column=3)
 
+        self.spacer3 = Label(root, text="", bg="#5b5b5c")
+        self.spacer3.grid(row=11, column=3)
+
+        self.login_pass_through_btn = Button(
+            root, text="Already have an account? Press here to Login", font=("Arial 12 bold"),
+            bg="#5b5b5c", fg="#0381ff", bd=0, command=self.login_pass_through)
+        self.login_pass_through_btn.grid(row=12, column=3)
+        
         def signup_process(username, pwd, confirmpwd):
 
             with open("usernames.json") as c:
@@ -98,6 +106,21 @@ class signup:
                 self.spacer3.destroy()
                 self.sign_upbutton.destroy()
                 login(root)
+    
+    def login_pass_through(self):
+        self.signuptxt.destroy()
+        self.usernametxt.destroy()
+        self.username_entry.destroy()
+        self.spacer1.destroy()
+        self.pwd_txt.destroy()
+        self.password.destroy()
+        self.spacer2.destroy()
+        self.confirmpwdtxt.destroy()
+        self.confirmpassword.destroy()
+        self.spacer3.destroy()
+        self.sign_upbutton.destroy()
+        self.login_pass_through_btn.destroy()
+        login(root)
 
 
 class login:
@@ -283,6 +306,8 @@ class main_menu:
 class add_job:
     def __init__(self, master, username):
         self.root = master
+        main_menu_return = Button(root, text = "Return to Main Menu", command = lambda: main_menu_return(frame, frame1))
+        main_menu_return.grid(row=0, column = 4)
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
 
@@ -420,6 +445,9 @@ class add_job:
             frame.grid_forget()
             main_menu(root, username)
 
+        def main_menu_return(frame, frame1):
+            frame.grid_forget()
+            frame1.grid_forget()
 
 class staff_tracker:
     def __init__(self, master, username):
