@@ -58,7 +58,7 @@ class signup:
             root, text="Already have an account? Press here to Login", font=("Arial 12 bold"),
             bg="#5b5b5c", fg="#0381ff", bd=0, command=self.login_pass_through)
         self.login_pass_through_btn.grid(row=12, column=3)
-        
+
         def signup_process(username, pwd, confirmpwd):
 
             with open("usernames.json") as c:
@@ -106,7 +106,7 @@ class signup:
                 self.spacer3.destroy()
                 self.sign_upbutton.destroy()
                 login(root)
-    
+
     def login_pass_through(self):
         self.signuptxt.destroy()
         self.usernametxt.destroy()
@@ -306,8 +306,10 @@ class main_menu:
 class add_job:
     def __init__(self, master, username):
         self.root = master
-        main_menu_return = Button(root, text = "Return to Main Menu", command = lambda: main_menu_return(frame, frame1))
-        main_menu_return.grid(row=0, column = 4)
+        self.username = username
+        self.main_menu_return = Button(
+            root, text="Return to Main Menu", command=lambda: main_menu_return(frame))
+        self.main_menu_return.grid(row=0, column=4)
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
 
@@ -382,6 +384,8 @@ class add_job:
                 frame1 = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
                 frame1.grid(row=0, column=3)
 
+                frame = frame1
+
                 addjobtxt = Label(frame1, text="Add Job", font=(
                     "Impact 60"), fg="white", bg="#5b5b5c")
                 addjobtxt.grid(row=1, column=3)
@@ -416,7 +420,15 @@ class add_job:
                 staff_txt.grid(row=8, column=3)
                 staff_default = StringVar()
                 staff_default.set("Select Staff")
-                staff = ["sdfs", "sdfsdf"]
+                with open("staff.json") as d:
+                    all_staff = json.load(d)
+
+                staff = []
+
+                for indiv_staff in all_staff:
+                    if indiv_staff[0] == username:
+                        staff.append(indiv_staff[1])
+
                 staff_entry = OptionMenu(frame1, staff_default, *staff)
                 staff_entry.grid(row=9, column=3)
 
@@ -443,11 +455,14 @@ class add_job:
                 json.dump(existing_jobs, j)
             messagebox.showinfo("Success!", "Sucessfully Added Job!")
             frame.grid_forget()
+            self.main_menu_return.destroy()
             main_menu(root, username)
 
-        def main_menu_return(frame, frame1):
+        def main_menu_return(frame):
             frame.grid_forget()
-            frame1.grid_forget()
+            self.main_menu_return.destroy()
+            main_menu(root, self.username)
+
 
 class staff_tracker:
     def __init__(self, master, username):
