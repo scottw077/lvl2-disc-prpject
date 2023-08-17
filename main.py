@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk
 import json
 import datetime
 import hashlib
+from borb.pdf import *
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -308,8 +309,8 @@ class add_job:
         self.root = master
         self.username = username
         self.main_menu_return = Button(
-            root, text="Return to Main Menu", command=lambda: main_menu_return(frame))
-        self.main_menu_return.grid(row=0, column=4)
+            root, text="Return to Main Menu", command=lambda: main_menu_return(frame, self.main_menu_return))
+        self.main_menu_return.place(x=672, y=8)
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
 
@@ -380,11 +381,14 @@ class add_job:
 
             else:
                 frame.grid_forget()
+                self.main_menu_return.destroy()
 
                 frame1 = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
                 frame1.grid(row=0, column=3)
 
-                frame = frame1
+                main_menu_return1 = Button(
+                    root, text="Return to Main Menu", command=lambda: main_menu_return(frame1, main_menu_return1))
+                main_menu_return1.place(x=672, y=8)
 
                 addjobtxt = Label(frame1, text="Add Job", font=(
                     "Impact 60"), fg="white", bg="#5b5b5c")
@@ -436,10 +440,10 @@ class add_job:
                 spacer3.grid(row=10, column=3)
 
                 add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(
-                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), staff_default.get(), frame1))
+                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), staff_default.get(), frame1, main_menu_return1))
                 add_job_btn.grid(row=11, column=3)
 
-        def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame):
+        def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame, return_button):
             with open("jobs.json", "r") as h:
                 existing_jobs = json.load(h)
 
@@ -455,12 +459,12 @@ class add_job:
                 json.dump(existing_jobs, j)
             messagebox.showinfo("Success!", "Sucessfully Added Job!")
             frame.grid_forget()
-            self.main_menu_return.destroy()
+            return_button.destroy()
             main_menu(root, username)
 
-        def main_menu_return(frame):
+        def main_menu_return(frame, return_button):
             frame.grid_forget()
-            self.main_menu_return.destroy()
+            return_button.destroy()
             main_menu(root, self.username)
 
 
@@ -550,6 +554,12 @@ class staff_tracker:
         self.addstaff.destroy()
         self.main_menu_return.destroy()
         main_menu(root, self.username)
+
+
+class invoice_creation:
+    def __init__(self, master, username):
+        self.username = username
+        self.root = master
 
 
 def main():
