@@ -288,20 +288,21 @@ class main_menu:
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        self.app = add_job(root, self.username)
+        add_job(root, self.username)
 
     def staff_tracker(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        self.app = staff_tracker(root, self.username)
+        staff_tracker(root, self.username)
 
     def create_invoice(self):
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
+        invoice_creation(root, self.username)
 
 
 class add_job:
@@ -560,6 +561,30 @@ class invoice_creation:
     def __init__(self, master, username):
         self.username = username
         self.root = master
+        self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.main_menu_return_passthrough)
+        self.main_menu_return.place(x=665, y=15)
+        with open("jobs.json", "r") as d:
+            all_jobs = json.load(d)
+            users_jobs = []
+            display_jobs = []
+            for job in all_jobs:
+                if job[0] == self.username:
+                    users_jobs.append(job[1:])
+                    display_jobs.append(job[1:4] + job[6:])
+
+        self.invoicecreationtext = Label(root, text="Create Invoice", font=(
+            "Impact 60"), fg="white", bg="#5b5b5c")
+        self.invoicecreationtext.grid(row=0, column=3)
+        self.select_job = StringVar()
+        self.select_job.set("Select Job to create invoice for:")
+
+        jobs_entry = OptionMenu(root, self.select_job, *display_jobs)
+        jobs_entry.grid(row=9, column=3)
+
+    def main_menu_return_passthrough(self):
+        self.main_menu_return.destroy()
+        main_menu(root, self.username)
 
 
 def main():
