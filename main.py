@@ -455,6 +455,7 @@ class add_job:
 
             new_job = [username, job_num, name, email, phnenum,
                        address, job_type, job_status, staff]
+
             existing_jobs.append(new_job)
             with open("jobs.json", "w") as j:
                 json.dump(existing_jobs, j)
@@ -579,7 +580,18 @@ class invoice_creation:
         self.select_job = StringVar()
         self.select_job.set("Select Job to create invoice for:")
 
-        jobs_entry = OptionMenu(root, self.select_job, *display_jobs)
+        test_str = ""
+        display_jobs2 = []
+        for job in display_jobs:
+            for item in job:
+                test = str(item)
+                test_str += (" : " + test)
+            list_job = test_str[2:]
+            display_jobs2.append(list_job)
+            test_str = ""
+
+        jobs_entry = OptionMenu(root, self.select_job,
+                                *display_jobs2)
         jobs_entry.grid(row=9, column=3)
 
     def main_menu_return_passthrough(self):
