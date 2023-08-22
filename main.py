@@ -592,7 +592,30 @@ class invoice_creation:
 
         jobs_entry = OptionMenu(root, self.select_job,
                                 *display_jobs2)
-        jobs_entry.grid(row=9, column=3)
+        jobs_entry.grid(row=1, column=3)
+
+        r = IntVar()
+        r.set("2")
+
+        self.gsttxt = Label(root, text="Do you charge GST?", font=(
+            "Arial 12 bold"), fg="white", bg="#5b5b5c")
+        self.gsttxt.grid(row=2, column=3)
+
+        self.gstbutton1 = Radiobutton(
+            root, text="Yes", variable=r, value=1, bg="#5b5b5c")
+        self.gstbutton2 = Radiobutton(
+            root, text="No", variable=r, value=2, bg="#5b5b5c")
+        self.gstbutton1.grid(row=3, column=3)
+        self.gstbutton2.grid(row=4, column=3)
+
+        self.testentrybox = Entry(root, width=20, justify="center")
+        self.testentrybox.grid(row=5, column=3)
+
+        self.testentrybox1 = Entry(root, width=20, justify="center")
+        self.testentrybox1.grid(row=5, column=4)
+
+        self.gstincl = StringVar()
+        self.gstincl.set("Gst Included or Excluded?")
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
