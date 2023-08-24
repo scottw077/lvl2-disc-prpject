@@ -597,25 +597,44 @@ class invoice_creation:
         r = IntVar()
         r.set("2")
 
+        self.gstdroppeddown = False
+
         self.gsttxt = Label(root, text="Do you charge GST?", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
         self.gsttxt.grid(row=2, column=3)
 
         self.gstbutton1 = Radiobutton(
-            root, text="Yes", variable=r, value=1, bg="#5b5b5c")
+            root, text="Yes", variable=r, value=1, bg="#5b5b5c", command=self.gst_dropdown)
         self.gstbutton2 = Radiobutton(
-            root, text="No", variable=r, value=2, bg="#5b5b5c")
+            root, text="No", variable=r, value=2, bg="#5b5b5c", command=self.destroy_gstdropdown)
         self.gstbutton1.grid(row=3, column=3)
         self.gstbutton2.grid(row=4, column=3)
 
-        self.testentrybox = Entry(root, width=20, justify="center")
-        self.testentrybox.grid(row=5, column=3)
+        self.testentrybox = Entry(root, width=85, justify="center")
+        self.testentrybox.place(x=8, y=240)
 
-        self.testentrybox1 = Entry(root, width=20, justify="center")
-        self.testentrybox1.grid(row=5, column=4)
+        self.testentrybox1 = Entry(root, width=12, justify="center")
+        self.testentrybox1.place(x=590, y=240)
+
+        self.testentrybox2 = Entry(root, width=12, justify="center")
+        self.testentrybox2.place(x=700, y=240)
 
         self.gstincl = StringVar()
         self.gstincl.set("Gst Included or Excluded?")
+
+    def gst_dropdown(self):
+        self.gstinclexcl = StringVar()
+        self.gstinclexcl.set("Is GST Included or Excluded")
+        gstoptions = ["GST Included", "GST Excluded"]
+        self.gstdroppeddown = True
+        self.gstdrowndown_menu = OptionMenu(
+            root, self.gstinclexcl, *gstoptions)
+        self.gstdrowndown_menu.place(x=700, y=120)
+
+    def destroy_gstdropdown(self):
+        if self.gstdroppeddown == True:
+            self.gstdrowndown_menu.destroy()
+            self.gstdroppeddown = False
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
