@@ -610,7 +610,7 @@ class invoice_creation:
         self.gstbutton1.grid(row=3, column=3)
         self.gstbutton2.grid(row=4, column=3)
 
-        self.testentrybox = Entry(root, width=85, justify="center")
+        self.testentrybox = Entry(root, width=85)
         self.testentrybox.place(x=8, y=240)
 
         self.testentrybox1 = Entry(root, width=12, justify="center")
@@ -618,6 +618,12 @@ class invoice_creation:
 
         self.testentrybox2 = Entry(root, width=12, justify="center")
         self.testentrybox2.place(x=700, y=240)
+
+        self.num = 0
+
+        self.addnewline = Button(root, text="Add New Line", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.newline)
+        self.addnewline.place(x=700, y=200)
 
         self.gstincl = StringVar()
         self.gstincl.set("Gst Included or Excluded?")
@@ -635,6 +641,22 @@ class invoice_creation:
         if self.gstdroppeddown == True:
             self.gstdrowndown_menu.destroy()
             self.gstdroppeddown = False
+
+    def newline(self):
+        if self.num <= 125:
+            testentrybox = Entry(root, width=85)
+            testentrybox.place(x=8, y=(self.num) + 265)
+
+            testentrybox1 = Entry(root, width=12, justify="center")
+            testentrybox1.place(x=590, y=(self.num) + 265)
+
+            testentrybox2 = Entry(root, width=12, justify="center")
+            testentrybox2.place(x=700, y=(self.num) + 265)
+            self.num += 25
+        else:
+            self.maxlineerror = Label(root, text="Max number of lines reached", font=(
+            "Arial 12 bold"), fg="red", bg="#5b5b5c")
+            self.maxlineerror.grid(row=10, column=3)
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
