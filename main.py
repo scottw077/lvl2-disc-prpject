@@ -592,7 +592,10 @@ class invoice_creation:
 
         jobs_entry = OptionMenu(root, self.select_job,
                                 *display_jobs2)
-        jobs_entry.grid(row=1, column=3)
+        jobs_entry.grid(row=5, column=3)
+
+        spacer2 = Label(root, text="", bg="#5b5b5c")
+        spacer2.grid(row=4, column=3)
 
         r = IntVar()
         r.set("2")
@@ -601,23 +604,27 @@ class invoice_creation:
 
         self.gsttxt = Label(root, text="Do you charge GST?", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.gsttxt.grid(row=2, column=3)
+        self.gsttxt.grid(row=1, column=3)
 
         self.gstbutton1 = Radiobutton(
             root, text="Yes", variable=r, value=1, bg="#5b5b5c", command=self.gst_dropdown)
         self.gstbutton2 = Radiobutton(
             root, text="No", variable=r, value=2, bg="#5b5b5c", command=self.destroy_gstdropdown)
-        self.gstbutton1.grid(row=3, column=3)
-        self.gstbutton2.grid(row=4, column=3)
+        self.gstbutton1.grid(row=2, column=3)
+        self.gstbutton2.grid(row=3, column=3)
+
+        self.desclabel = Label(root, text="Description",
+                               bg="#5b5b5c", font=("Arial 11"))
+        self.desclabel.place(x=8, y=215)
 
         self.testentrybox = Entry(root, width=85)
-        self.testentrybox.place(x=8, y=240)
+        self.testentrybox.place(x=8, y=265)
 
         self.testentrybox1 = Entry(root, width=12, justify="center")
-        self.testentrybox1.place(x=590, y=240)
+        self.testentrybox1.place(x=590, y=265)
 
         self.testentrybox2 = Entry(root, width=12, justify="center")
-        self.testentrybox2.place(x=700, y=240)
+        self.testentrybox2.place(x=700, y=265)
 
         self.num = 0
 
@@ -625,8 +632,9 @@ class invoice_creation:
             "Arial 8 bold"), command=self.newline)
         self.addnewline.place(x=700, y=200)
 
-        self.gstincl = StringVar()
-        self.gstincl.set("Gst Included or Excluded?")
+        self.createinvoice_button = Button(root, text="Create Invoice", padx=30,
+                                           pady=10, font=("Arial 12 bold"), borderwidth=6)
+        self.createinvoice_button.place(x=310, y=380)
 
     def gst_dropdown(self):
         self.gstinclexcl = StringVar()
@@ -635,7 +643,7 @@ class invoice_creation:
         self.gstdroppeddown = True
         self.gstdrowndown_menu = OptionMenu(
             root, self.gstinclexcl, *gstoptions)
-        self.gstdrowndown_menu.place(x=700, y=120)
+        self.gstdrowndown_menu.place(x=8, y=150)
 
     def destroy_gstdropdown(self):
         if self.gstdroppeddown == True:
@@ -643,24 +651,27 @@ class invoice_creation:
             self.gstdroppeddown = False
 
     def newline(self):
-        if self.num <= 125:
-            testentrybox = Entry(root, width=85)
-            testentrybox.place(x=8, y=(self.num) + 265)
+        if self.num <= 50:
+            self.testentrybox = Entry(root, width=85)
+            self.testentrybox.place(x=8, y=(self.num) + 290)
 
-            testentrybox1 = Entry(root, width=12, justify="center")
-            testentrybox1.place(x=590, y=(self.num) + 265)
+            self.testentrybox1 = Entry(root, width=12, justify="center")
+            self.testentrybox1.place(x=590, y=(self.num) + 290)
 
-            testentrybox2 = Entry(root, width=12, justify="center")
-            testentrybox2.place(x=700, y=(self.num) + 265)
+            self.testentrybox2 = Entry(root, width=12, justify="center")
+            self.testentrybox2.place(x=700, y=(self.num) + 290)
             self.num += 25
+
         else:
             self.maxlineerror = Label(root, text="Max number of lines reached", font=(
-            "Arial 12 bold"), fg="red", bg="#5b5b5c")
-            self.maxlineerror.grid(row=10, column=3)
+                "Arial 12 bold"), fg="red", bg="#5b5b5c")
+            self.maxlineerror.place(x=8, y=420)
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
         main_menu(root, self.username)
+        print(self.testentrybox.get(), self.testentrybox1.get(),
+              self.testentrybox2.get())
 
 
 def main():
