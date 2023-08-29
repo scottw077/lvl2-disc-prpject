@@ -590,12 +590,12 @@ class invoice_creation:
             display_jobs2.append(list_job)
             test_str = ""
 
-        jobs_entry = OptionMenu(root, self.select_job,
-                                *display_jobs2)
-        jobs_entry.grid(row=5, column=3)
+        self.jobs_entry = OptionMenu(root, self.select_job,
+                                     *display_jobs2)
+        self.jobs_entry.grid(row=5, column=3)
 
-        spacer2 = Label(root, text="", bg="#5b5b5c")
-        spacer2.grid(row=4, column=3)
+        self.spacer2 = Label(root, text="", bg="#5b5b5c")
+        self.spacer2.grid(row=4, column=3)
 
         r = IntVar()
         r.set("2")
@@ -617,10 +617,12 @@ class invoice_creation:
                                bg="#5b5b5c", font=("Arial 11"))
         self.desclabel.place(x=8, y=240)
 
-        self.amountlabel = Label(root, text="Amount", bg="#5b5b5c", font=("Arial 11"))
+        self.amountlabel = Label(
+            root, text="Amount", bg="#5b5b5c", font=("Arial 11"))
         self.amountlabel.place(x=550, y=240)
 
-        self.pricelabel = Label(root, text="Price", bg="#5b5b5c", font=("Arial 11"))
+        self.pricelabel = Label(
+            root, text="Price", bg="#5b5b5c", font=("Arial 11"))
         self.pricelabel.place(x=675, y=240)
 
         self.descentrybox = Entry(root, width=85)
@@ -643,12 +645,16 @@ class invoice_creation:
         self.descentrybox3 = Entry(root, width=85)
         self.amountentrybox3 = Entry(root, width=16, justify="center")
         self.priceentrybox3 = Entry(root, width=19, justify="center")
-        
+
         self.num = 0
 
         self.addnewline = Button(root, text="Add New Line", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.newline)
         self.addnewline.place(x=700, y=200)
+
+        self.removeline = Button(root, text="Remove Line", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.remove_line)
+        self.removeline.place(x=600, y=200)
 
         self.createinvoice_button = Button(root, text="Create Invoice", padx=30,
                                            pady=10, font=("Arial 12 bold"), borderwidth=6)
@@ -674,7 +680,7 @@ class invoice_creation:
             self.amountentrybox1.place(x=550, y=290)
             self.priceentrybox1.place(x=675, y=290)
             self.num += 1
-        
+
         elif self.num == 1:
             self.descentrybox2.place(x=8, y=315)
             self.amountentrybox2.place(x=550, y=315)
@@ -686,20 +692,68 @@ class invoice_creation:
             self.amountentrybox3.place(x=550, y=340)
             self.priceentrybox3.place(x=675, y=340)
             self.num += 1
-        
+
         else:
+            self.num += 1
             self.maxlineerror = Label(root, text="Max number of lines reached", font=(
                 "Arial 12 bold"), fg="red", bg="#5b5b5c")
             self.maxlineerror.place(x=8, y=420)
 
-    
+    def remove_line(self):
+        if self.num == 1:
+            self.descentrybox1.place_forget()
+            self.amountentrybox1.place_forget()
+            self.priceentrybox1.place_forget()
+            self.num -= 1
+
+        elif self.num == 2:
+            self.descentrybox2.place_forget()
+            self.amountentrybox2.place_forget()
+            self.priceentrybox2.place_forget()
+            self.num -= 1
+
+        elif self.num == 3:
+            self.descentrybox3.place_forget()
+            self.amountentrybox3.place_forget()
+            self.priceentrybox3.place_forget()
+            self.num -= 1
+            self.maxlineerror.place_forget()
+
+    def invoice_create(self):
+        print("ddd")
+
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
+        self.amountentrybox.destroy()
+        self.amountentrybox1.destroy()
+        self.amountentrybox2.destroy()
+        self.amountentrybox3.destroy()
+        self.descentrybox.destroy()
+        self.descentrybox1.destroy()
+        self.descentrybox2.destroy()
+        self.descentrybox3.destroy()
+        self.priceentrybox.destroy()
+        self.priceentrybox1.destroy()
+        self.priceentrybox2.destroy()
+        self.priceentrybox3.destroy()
+        self.desclabel.destroy()
+        self.amountlabel.destroy()
+        self.pricelabel.destroy()
+        self.createinvoice_button.destroy()
+        self.invoicecreationtext.destroy()
+        self.gsttxt.destroy()
+        self.gstbutton1.destroy()
+        self.gstbutton2.destroy()
+        self.spacer2.destroy()
+        self.jobs_entry.destroy()
+        self.addnewline.destroy()
+        if self.gstdroppeddown == True:
+            self.gstdrowndown_menu.destroy()
+
+        if self.num == 4:
+            self.maxlineerror.destroy()
+
         main_menu(root, self.username)
-        print(self.descentrybox.get(), self.amountentrybox.get(), self.amountentrybox.get())
-        print(self.descentrybox1.get(), self.amountentrybox1.get(), self.amountentrybox1.get())
-        print(self.descentrybox2.get(), self.amountentrybox2.get(), self.amountentrybox2.get())
-        print(self.descentrybox3.get(), self.amountentrybox3.get(), self.amountentrybox3.get())
 
 
 def main():
