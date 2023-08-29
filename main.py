@@ -615,17 +615,35 @@ class invoice_creation:
 
         self.desclabel = Label(root, text="Description",
                                bg="#5b5b5c", font=("Arial 11"))
-        self.desclabel.place(x=8, y=215)
+        self.desclabel.place(x=8, y=240)
 
-        self.testentrybox = Entry(root, width=85)
-        self.testentrybox.place(x=8, y=265)
+        self.amountlabel = Label(root, text="Amount", bg="#5b5b5c", font=("Arial 11"))
+        self.amountlabel.place(x=550, y=240)
 
-        self.testentrybox1 = Entry(root, width=12, justify="center")
-        self.testentrybox1.place(x=590, y=265)
+        self.pricelabel = Label(root, text="Price", bg="#5b5b5c", font=("Arial 11"))
+        self.pricelabel.place(x=675, y=240)
 
-        self.testentrybox2 = Entry(root, width=12, justify="center")
-        self.testentrybox2.place(x=700, y=265)
+        self.descentrybox = Entry(root, width=85)
+        self.descentrybox.place(x=8, y=265)
 
+        self.amountentrybox = Entry(root, width=16, justify="center")
+        self.amountentrybox.place(x=550, y=265)
+
+        self.priceentrybox = Entry(root, width=19, justify="center")
+        self.priceentrybox.place(x=675, y=265)
+
+        self.descentrybox1 = Entry(root, width=85)
+        self.amountentrybox1 = Entry(root, width=16, justify="center")
+        self.priceentrybox1 = Entry(root, width=19, justify="center")
+
+        self.descentrybox2 = Entry(root, width=85)
+        self.amountentrybox2 = Entry(root, width=16, justify="center")
+        self.priceentrybox2 = Entry(root, width=19, justify="center")
+
+        self.descentrybox3 = Entry(root, width=85)
+        self.amountentrybox3 = Entry(root, width=16, justify="center")
+        self.priceentrybox3 = Entry(root, width=19, justify="center")
+        
         self.num = 0
 
         self.addnewline = Button(root, text="Add New Line", padx=2, pady=2, font=(
@@ -651,27 +669,37 @@ class invoice_creation:
             self.gstdroppeddown = False
 
     def newline(self):
-        if self.num <= 50:
-            self.testentrybox = Entry(root, width=85)
-            self.testentrybox.place(x=8, y=(self.num) + 290)
+        if self.num == 0:
+            self.descentrybox1.place(x=8, y=290)
+            self.amountentrybox1.place(x=550, y=290)
+            self.priceentrybox1.place(x=675, y=290)
+            self.num += 1
+        
+        elif self.num == 1:
+            self.descentrybox2.place(x=8, y=315)
+            self.amountentrybox2.place(x=550, y=315)
+            self.priceentrybox2.place(x=675, y=315)
+            self.num += 1
 
-            self.testentrybox1 = Entry(root, width=12, justify="center")
-            self.testentrybox1.place(x=590, y=(self.num) + 290)
-
-            self.testentrybox2 = Entry(root, width=12, justify="center")
-            self.testentrybox2.place(x=700, y=(self.num) + 290)
-            self.num += 25
-
+        elif self.num == 2:
+            self.descentrybox3.place(x=8, y=340)
+            self.amountentrybox3.place(x=550, y=340)
+            self.priceentrybox3.place(x=675, y=340)
+            self.num += 1
+        
         else:
             self.maxlineerror = Label(root, text="Max number of lines reached", font=(
                 "Arial 12 bold"), fg="red", bg="#5b5b5c")
             self.maxlineerror.place(x=8, y=420)
 
+    
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
         main_menu(root, self.username)
-        print(self.testentrybox.get(), self.testentrybox1.get(),
-              self.testentrybox2.get())
+        print(self.descentrybox.get(), self.amountentrybox.get(), self.amountentrybox.get())
+        print(self.descentrybox1.get(), self.amountentrybox1.get(), self.amountentrybox1.get())
+        print(self.descentrybox2.get(), self.amountentrybox2.get(), self.amountentrybox2.get())
+        print(self.descentrybox3.get(), self.amountentrybox3.get(), self.amountentrybox3.get())
 
 
 def main():
