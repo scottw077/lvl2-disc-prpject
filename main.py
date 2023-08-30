@@ -693,7 +693,7 @@ class invoice_creation:
             self.priceentrybox3.place(x=675, y=340)
             self.num += 1
 
-        else:
+        elif self.num == 3:
             self.num += 1
             self.maxlineerror = Label(root, text="Max number of lines reached", font=(
                 "Arial 12 bold"), fg="red", bg="#5b5b5c")
@@ -717,10 +717,17 @@ class invoice_creation:
             self.amountentrybox3.place_forget()
             self.priceentrybox3.place_forget()
             self.num -= 1
+        
+        elif self.num >= 4:
+            self.descentrybox3.place_forget()
+            self.amountentrybox3.place_forget()
+            self.priceentrybox3.place_forget()
+            self.num = 2
+            self.maxlineerror.place_forget()
             self.maxlineerror.place_forget()
 
     def invoice_create(self):
-        print("ddd")
+        
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
@@ -750,7 +757,7 @@ class invoice_creation:
         if self.gstdroppeddown == True:
             self.gstdrowndown_menu.destroy()
 
-        if self.num == 4:
+        if self.num >= 4:
             self.maxlineerror.destroy()
 
         main_menu(root, self.username)
