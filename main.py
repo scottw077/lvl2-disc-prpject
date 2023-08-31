@@ -726,9 +726,11 @@ class invoice_creation:
             self.maxlineerror.place_forget()
             self.maxlineerror.place_forget()
 
-    def invoice_create(self):
-        
-
+    def invoice_create(desc, amount, price):
+        if (desc or amount or price) and not (desc and amount and price)
+            print("test")
+            
+    
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
         self.amountentrybox.destroy()
