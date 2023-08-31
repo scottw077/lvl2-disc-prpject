@@ -657,21 +657,22 @@ class invoice_creation:
         self.removeline.place(x=600, y=200)
 
         self.createinvoice_button = Button(root, text="Create Invoice", padx=30,
-                                           pady=10, font=("Arial 12 bold"), borderwidth=6)
+                                           pady=10, font=("Arial 12 bold"), borderwidth=6, command=self.invoice_create)
         self.createinvoice_button.place(x=310, y=380)
 
-    def gst_dropdown(self):
         self.gstinclexcl = StringVar()
         self.gstinclexcl.set("Is GST Included or Excluded")
         gstoptions = ["GST Included", "GST Excluded"]
-        self.gstdroppeddown = True
         self.gstdrowndown_menu = OptionMenu(
             root, self.gstinclexcl, *gstoptions)
+
+    def gst_dropdown(self):
+        self.gstdroppeddown = True
         self.gstdrowndown_menu.place(x=8, y=150)
 
     def destroy_gstdropdown(self):
         if self.gstdroppeddown == True:
-            self.gstdrowndown_menu.destroy()
+            self.gstdrowndown_menu.place_forget()
             self.gstdroppeddown = False
 
     def newline(self):
@@ -717,7 +718,7 @@ class invoice_creation:
             self.amountentrybox3.place_forget()
             self.priceentrybox3.place_forget()
             self.num -= 1
-        
+
         elif self.num >= 4:
             self.descentrybox3.place_forget()
             self.amountentrybox3.place_forget()
@@ -726,11 +727,35 @@ class invoice_creation:
             self.maxlineerror.place_forget()
             self.maxlineerror.place_forget()
 
-    def invoice_create(desc, amount, price):
-        if (desc or amount or price) and not (desc and amount and price)
-            print("test")
-            
-    
+    def invoice_create(self):
+        self.invoice_create_error_check(self.descentrybox.get(
+        ), self.amountentrybox.get(), self.priceentrybox.get())
+        self.invoice_create_error_check(self.descentrybox1.get(
+        ), self.amountentrybox1.get(), self.priceentrybox1.get())
+        self.invoice_create_error_check(self.descentrybox2.get(
+        ), self.amountentrybox2.get(), self.priceentrybox2.get())
+        self.invoice_create_error_check(self.descentrybox3.get(
+        ), self.amountentrybox3.get(), self.priceentrybox3.get())
+
+    def invoice_create_error_check(self, desc, amount, price):
+        if (desc or amount or price) and not (desc and amount and price):
+            messagebox.showerror(
+                "An error occured", f"Please input all 3 inputs (Description, Amount, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n Amount: {amount} \n Price: {price}")
+
+        if amount == "":
+            pass
+
+        elif amount.isnumeric() == False:
+            messagebox.showerror(
+                "An error occured", "Please make sure that the amount is a number")
+
+        if price == "":
+            pass
+
+        elif price.isnumeric() == False:
+            messagebox.showerror("An error occured",
+                                 "Please make sure that the price is a number")
+
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
         self.amountentrybox.destroy()
