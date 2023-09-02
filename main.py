@@ -597,8 +597,8 @@ class invoice_creation:
         self.spacer2 = Label(root, text="", bg="#5b5b5c")
         self.spacer2.grid(row=4, column=3)
 
-        r = IntVar()
-        r.set("2")
+        self.r = IntVar()
+        self.r.set("3")
 
         self.gstdroppeddown = False
 
@@ -607,9 +607,9 @@ class invoice_creation:
         self.gsttxt.grid(row=1, column=3)
 
         self.gstbutton1 = Radiobutton(
-            root, text="Yes", variable=r, value=1, bg="#5b5b5c", command=self.gst_dropdown)
+            root, text="Yes", variable=self.r, value=1, bg="#5b5b5c", command=self.gst_dropdown)
         self.gstbutton2 = Radiobutton(
-            root, text="No", variable=r, value=2, bg="#5b5b5c", command=self.destroy_gstdropdown)
+            root, text="No", variable=self.r, value=2, bg="#5b5b5c", command=self.destroy_gstdropdown)
         self.gstbutton1.grid(row=2, column=3)
         self.gstbutton2.grid(row=3, column=3)
 
@@ -673,7 +673,7 @@ class invoice_creation:
     def destroy_gstdropdown(self):
         if self.gstdroppeddown == True:
             self.gstdrowndown_menu.place_forget()
-            self.gstdroppeddown = False
+            self.gstdroppeddown = False  
 
     def newline(self):
         if self.num == 0:
@@ -728,6 +728,7 @@ class invoice_creation:
             self.maxlineerror.place_forget()
 
     def invoice_create(self):
+        self.errorchecknum = 0
         self.invoice_create_error_check(self.descentrybox.get(
         ), self.amountentrybox.get(), self.priceentrybox.get())
         self.invoice_create_error_check(self.descentrybox1.get(
@@ -736,12 +737,31 @@ class invoice_creation:
         ), self.amountentrybox2.get(), self.priceentrybox2.get())
         self.invoice_create_error_check(self.descentrybox3.get(
         ), self.amountentrybox3.get(), self.priceentrybox3.get())
+        if self.select_job == "Select Job to create invoice for:":
+            messagebox.showerror("An error occured", "Please select a job to create the invoice for. If there is no job, please create one")
+            self.errorchecknum += 1
+        
+        if self.r.get() == 3:
+            messagebox.showerror("An error occured", "Please select whether you charge GST or do not")
+            self.errorchecknum += 1
+
+        if self.gstdroppeddown == True:
+            if self.gstinclexcl == "Is GST Included or Excluded":
+                messagebox.showerror("An error occured", "Please select whether GST is included in the price or excluded")
+                self.errorchecknum += 1
+        
+        
+        if self.errorchecknum == 0:
+            print(self.select_job.get()[1])
+
+
 
     def invoice_create_error_check(self, desc, amount, price):
+        
         if (desc or amount or price) and not (desc and amount and price):
             messagebox.showerror(
                 "An error occured", f"Please input all 3 inputs (Description, Amount, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n Amount: {amount} \n Price: {price}")
-
+            self.errorchecknum += 1 
 
         if amount == "":
             pass
@@ -751,7 +771,8 @@ class invoice_creation:
                 float(amount)
             
             except ValueError:
-               messagebox.showerror("An error occured", "Please make sure that the amount is a number and contains no other characters")     
+                messagebox.showerror("An error occured", "Please make sure that the amount is a number and contains no other characters")     
+                self.errorchecknum += 1
 
         if price == "":
             pass
@@ -763,17 +784,27 @@ class invoice_creation:
                     pass
                 elif price[0].isnumeric():
                     pass
+                
                 else:
                     messagebox.showerror("An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                    self.errorchecknum += 1
             
             except ValueError:
                 messagebox.showerror("An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
-        
+                self.errorchecknum += 1    
+
         if len(desc) > 200:
-            messagebox.showerror("An error occured", "Too many characters in Description please shorten it to under 200")
+            messagebox.showerror("An error occured", "Too many characters in Description, please shorten it to 200 or under")
+            self.errorchecknum += 1 
 
         if len(amount) > 8:
-            messagebox.showerror("An error occured", "Too many characters in Amount")    
+            messagebox.showerror("An error occured", "Too many characters in Amount, please shorten it to 8 or under")
+            self.errorchecknum += 1 
+
+        if len(price) > 12:
+            messagebox.showerror("An error occured", "Too many characters in Price, please shorten it to 12 or under")    
+            self.errorchecknum += 1 
+        
 
 
     def main_menu_return_passthrough(self):
@@ -806,6 +837,8 @@ class invoice_creation:
 
         if self.num >= 4:
             self.maxlineerror.destroy()
+
+        print(self.r.get())
 
         main_menu(root, self.username)
 
