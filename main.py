@@ -742,19 +742,39 @@ class invoice_creation:
             messagebox.showerror(
                 "An error occured", f"Please input all 3 inputs (Description, Amount, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n Amount: {amount} \n Price: {price}")
 
+
         if amount == "":
             pass
 
-        elif amount.isnumeric() == False:
-            messagebox.showerror(
-                "An error occured", "Please make sure that the amount is a number")
+        else:
+            try:
+                float(amount)
+            
+            except ValueError:
+               messagebox.showerror("An error occured", "Please make sure that the amount is a number and contains no other characters")     
 
         if price == "":
             pass
 
-        elif price.isnumeric() == False:
-            messagebox.showerror("An error occured",
-                                 "Please make sure that the price is a number")
+        else:
+            try:
+                float(price[1:])
+                if price[0] == "$":
+                    pass
+                elif price[0].isnumeric():
+                    pass
+                else:
+                    messagebox.showerror("An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+            
+            except ValueError:
+                messagebox.showerror("An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+        
+        if len(desc) > 200:
+            messagebox.showerror("An error occured", "Too many characters in Description please shorten it to under 200")
+
+        if len(amount) > 8:
+            messagebox.showerror("An error occured", "Too many characters in Amount")    
+
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
