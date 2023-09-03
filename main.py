@@ -752,7 +752,19 @@ class invoice_creation:
         
         
         if self.errorchecknum == 0:
-            print(self.select_job.get()[1])
+            with open("jobs.json", "r") as l:
+                all_jobs = json.load(l)    
+                for job in all_jobs:
+                    if job[0] == self.username:
+                        if job[1] == self.select_job.get()[1]:
+                            test123 = all_jobs.index(job) 
+                            print(test123)
+            
+            with open("jobs.json", "w") as p:
+                json.dump(all_jobs, p)                
+                        
+        
+
 
 
 
@@ -838,7 +850,6 @@ class invoice_creation:
         if self.num >= 4:
             self.maxlineerror.destroy()
 
-        print(self.r.get())
 
         main_menu(root, self.username)
 
