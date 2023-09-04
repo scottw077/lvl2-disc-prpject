@@ -673,7 +673,7 @@ class invoice_creation:
     def destroy_gstdropdown(self):
         if self.gstdroppeddown == True:
             self.gstdrowndown_menu.place_forget()
-            self.gstdroppeddown = False  
+            self.gstdroppeddown = False
 
     def newline(self):
         if self.num == 0:
@@ -738,42 +738,42 @@ class invoice_creation:
         self.invoice_create_error_check(self.descentrybox3.get(
         ), self.amountentrybox3.get(), self.priceentrybox3.get())
         if self.select_job == "Select Job to create invoice for:":
-            messagebox.showerror("An error occured", "Please select a job to create the invoice for. If there is no job, please create one")
+            messagebox.showerror(
+                "An error occured", "Please select a job to create the invoice for. If there is no job, please create one")
             self.errorchecknum += 1
-        
+
         if self.r.get() == 3:
-            messagebox.showerror("An error occured", "Please select whether you charge GST or do not")
+            messagebox.showerror(
+                "An error occured", "Please select whether you charge GST or do not")
             self.errorchecknum += 1
 
         if self.gstdroppeddown == True:
             if self.gstinclexcl == "Is GST Included or Excluded":
-                messagebox.showerror("An error occured", "Please select whether GST is included in the price or excluded")
+                messagebox.showerror(
+                    "An error occured", "Please select whether GST is included in the price or excluded")
                 self.errorchecknum += 1
-        
-        
+
         if self.errorchecknum == 0:
             with open("jobs.json", "r") as l:
-                all_jobs = json.load(l)    
+                all_jobs = json.load(l)
                 for job in all_jobs:
+                    print(job[1])
                     if job[0] == self.username:
                         if job[1] == self.select_job.get()[1]:
-                            test123 = all_jobs.index(job) 
-                            print(test123)
-            
+                            test123 = all_jobs.index(job)
+                            print(test123 + "sdfasdasdasdasdasd")
+
+            print(self.select_job.get()[1])
+            print(job[1])
             with open("jobs.json", "w") as p:
-                json.dump(all_jobs, p)                
-                        
-        
-
-
-
+                json.dump(all_jobs, p)
 
     def invoice_create_error_check(self, desc, amount, price):
-        
+
         if (desc or amount or price) and not (desc and amount and price):
             messagebox.showerror(
                 "An error occured", f"Please input all 3 inputs (Description, Amount, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n Amount: {amount} \n Price: {price}")
-            self.errorchecknum += 1 
+            self.errorchecknum += 1
 
         if amount == "":
             pass
@@ -781,9 +781,10 @@ class invoice_creation:
         else:
             try:
                 float(amount)
-            
+
             except ValueError:
-                messagebox.showerror("An error occured", "Please make sure that the amount is a number and contains no other characters")     
+                messagebox.showerror(
+                    "An error occured", "Please make sure that the amount is a number and contains no other characters")
                 self.errorchecknum += 1
 
         if price == "":
@@ -796,28 +797,31 @@ class invoice_creation:
                     pass
                 elif price[0].isnumeric():
                     pass
-                
+
                 else:
-                    messagebox.showerror("An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                    messagebox.showerror(
+                        "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
                     self.errorchecknum += 1
-            
+
             except ValueError:
-                messagebox.showerror("An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
-                self.errorchecknum += 1    
+                messagebox.showerror(
+                    "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                self.errorchecknum += 1
 
         if len(desc) > 200:
-            messagebox.showerror("An error occured", "Too many characters in Description, please shorten it to 200 or under")
-            self.errorchecknum += 1 
+            messagebox.showerror(
+                "An error occured", "Too many characters in Description, please shorten it to 200 or under")
+            self.errorchecknum += 1
 
         if len(amount) > 8:
-            messagebox.showerror("An error occured", "Too many characters in Amount, please shorten it to 8 or under")
-            self.errorchecknum += 1 
+            messagebox.showerror(
+                "An error occured", "Too many characters in Amount, please shorten it to 8 or under")
+            self.errorchecknum += 1
 
         if len(price) > 12:
-            messagebox.showerror("An error occured", "Too many characters in Price, please shorten it to 12 or under")    
-            self.errorchecknum += 1 
-        
-
+            messagebox.showerror(
+                "An error occured", "Too many characters in Price, please shorten it to 12 or under")
+            self.errorchecknum += 1
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
@@ -844,12 +848,12 @@ class invoice_creation:
         self.spacer2.destroy()
         self.jobs_entry.destroy()
         self.addnewline.destroy()
+
         if self.gstdroppeddown == True:
             self.gstdrowndown_menu.destroy()
 
         if self.num >= 4:
             self.maxlineerror.destroy()
-
 
         main_menu(root, self.username)
 
