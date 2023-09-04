@@ -737,7 +737,7 @@ class invoice_creation:
         ), self.amountentrybox2.get(), self.priceentrybox2.get())
         self.invoice_create_error_check(self.descentrybox3.get(
         ), self.amountentrybox3.get(), self.priceentrybox3.get())
-        if self.select_job == "Select Job to create invoice for:":
+        if str(self.select_job.get()) == "Select Job to create invoice for:":
             messagebox.showerror(
                 "An error occured", "Please select a job to create the invoice for. If there is no job, please create one")
             self.errorchecknum += 1
@@ -748,7 +748,7 @@ class invoice_creation:
             self.errorchecknum += 1
 
         if self.gstdroppeddown == True:
-            if self.gstinclexcl == "Is GST Included or Excluded":
+            if str(self.gstinclexcl.get()) == "Is GST Included or Excluded":
                 messagebox.showerror(
                     "An error occured", "Please select whether GST is included in the price or excluded")
                 self.errorchecknum += 1
@@ -757,14 +757,11 @@ class invoice_creation:
             with open("jobs.json", "r") as l:
                 all_jobs = json.load(l)
                 for job in all_jobs:
-                    print(job[1])
                     if job[0] == self.username:
-                        if job[1] == self.select_job.get()[1]:
+                        if int(job[1]) == int(self.select_job.get()[1]):
                             test123 = all_jobs.index(job)
-                            print(test123 + "sdfasdasdasdasdasd")
+                            all_jobs.pop(test123)
 
-            print(self.select_job.get()[1])
-            print(job[1])
             with open("jobs.json", "w") as p:
                 json.dump(all_jobs, p)
 
