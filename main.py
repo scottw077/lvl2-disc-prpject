@@ -3,7 +3,8 @@ from tkinter import messagebox, ttk
 import json
 import datetime
 import hashlib
-from borb.pdf import *
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -729,6 +730,7 @@ class invoice_creation:
 
     def invoice_create(self):
         self.errorchecknum = 0
+        self.invoicelinecheck = 0
         self.invoice_create_error_check(self.descentrybox.get(
         ), self.amountentrybox.get(), self.priceentrybox.get())
         self.invoice_create_error_check(self.descentrybox1.get(
@@ -753,7 +755,17 @@ class invoice_creation:
                     "An error occured", "Please select whether GST is included in the price or excluded")
                 self.errorchecknum += 1
 
+        if self.invoicelinecheck == 4:
+            messagebox.showerror("An error occured", "Please write down atleast 1 line for your invoice")
+        
         if self.errorchecknum == 0:
+            
+            
+            
+            
+            
+            
+            
             with open("jobs.json", "r") as l:
                 all_jobs = json.load(l)
                 for job in all_jobs:
@@ -771,6 +783,9 @@ class invoice_creation:
             messagebox.showerror(
                 "An error occured", f"Please input all 3 inputs (Description, Amount, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n Amount: {amount} \n Price: {price}")
             self.errorchecknum += 1
+
+        if desc and amount and price == "":
+            self.invoicelinecheck += 1
 
         if amount == "":
             pass
