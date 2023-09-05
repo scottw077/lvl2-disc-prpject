@@ -618,9 +618,9 @@ class invoice_creation:
                                bg="#5b5b5c", font=("Arial 11"))
         self.desclabel.place(x=8, y=240)
 
-        self.amountlabel = Label(
-            root, text="Amount", bg="#5b5b5c", font=("Arial 11"))
-        self.amountlabel.place(x=550, y=240)
+        self.quantitylabel = Label(
+            root, text="Quantity", bg="#5b5b5c", font=("Arial 11"))
+        self.quantitylabel.place(x=550, y=240)
 
         self.pricelabel = Label(
             root, text="Price", bg="#5b5b5c", font=("Arial 11"))
@@ -629,22 +629,22 @@ class invoice_creation:
         self.descentrybox = Entry(root, width=85)
         self.descentrybox.place(x=8, y=265)
 
-        self.amountentrybox = Entry(root, width=16, justify="center")
-        self.amountentrybox.place(x=550, y=265)
+        self.quantityentrybox = Entry(root, width=16, justify="center")
+        self.quantityentrybox.place(x=550, y=265)
 
         self.priceentrybox = Entry(root, width=19, justify="center")
         self.priceentrybox.place(x=675, y=265)
 
         self.descentrybox1 = Entry(root, width=85)
-        self.amountentrybox1 = Entry(root, width=16, justify="center")
+        self.quantityentrybox1 = Entry(root, width=16, justify="center")
         self.priceentrybox1 = Entry(root, width=19, justify="center")
 
         self.descentrybox2 = Entry(root, width=85)
-        self.amountentrybox2 = Entry(root, width=16, justify="center")
+        self.quantityentrybox2 = Entry(root, width=16, justify="center")
         self.priceentrybox2 = Entry(root, width=19, justify="center")
 
         self.descentrybox3 = Entry(root, width=85)
-        self.amountentrybox3 = Entry(root, width=16, justify="center")
+        self.quantityentrybox3 = Entry(root, width=16, justify="center")
         self.priceentrybox3 = Entry(root, width=19, justify="center")
 
         self.num = 0
@@ -679,19 +679,19 @@ class invoice_creation:
     def newline(self):
         if self.num == 0:
             self.descentrybox1.place(x=8, y=290)
-            self.amountentrybox1.place(x=550, y=290)
+            self.quantityentrybox1.place(x=550, y=290)
             self.priceentrybox1.place(x=675, y=290)
             self.num += 1
 
         elif self.num == 1:
             self.descentrybox2.place(x=8, y=315)
-            self.amountentrybox2.place(x=550, y=315)
+            self.quantityentrybox2.place(x=550, y=315)
             self.priceentrybox2.place(x=675, y=315)
             self.num += 1
 
         elif self.num == 2:
             self.descentrybox3.place(x=8, y=340)
-            self.amountentrybox3.place(x=550, y=340)
+            self.quantityentrybox3.place(x=550, y=340)
             self.priceentrybox3.place(x=675, y=340)
             self.num += 1
 
@@ -704,25 +704,25 @@ class invoice_creation:
     def remove_line(self):
         if self.num == 1:
             self.descentrybox1.place_forget()
-            self.amountentrybox1.place_forget()
+            self.quantityentrybox1.place_forget()
             self.priceentrybox1.place_forget()
             self.num -= 1
 
         elif self.num == 2:
             self.descentrybox2.place_forget()
-            self.amountentrybox2.place_forget()
+            self.quantityentrybox2.place_forget()
             self.priceentrybox2.place_forget()
             self.num -= 1
 
         elif self.num == 3:
             self.descentrybox3.place_forget()
-            self.amountentrybox3.place_forget()
+            self.quantityentrybox3.place_forget()
             self.priceentrybox3.place_forget()
             self.num -= 1
 
         elif self.num >= 4:
             self.descentrybox3.place_forget()
-            self.amountentrybox3.place_forget()
+            self.quantityentrybox3.place_forget()
             self.priceentrybox3.place_forget()
             self.num = 2
             self.maxlineerror.place_forget()
@@ -732,13 +732,13 @@ class invoice_creation:
         self.errorchecknum = 0
         self.invoicelinecheck = 0
         self.invoice_create_error_check(self.descentrybox.get(
-        ), self.amountentrybox.get(), self.priceentrybox.get())
+        ), self.quantityentrybox.get(), self.priceentrybox.get())
         self.invoice_create_error_check(self.descentrybox1.get(
-        ), self.amountentrybox1.get(), self.priceentrybox1.get())
+        ), self.quantityentrybox1.get(), self.priceentrybox1.get())
         self.invoice_create_error_check(self.descentrybox2.get(
-        ), self.amountentrybox2.get(), self.priceentrybox2.get())
+        ), self.quantityentrybox2.get(), self.priceentrybox2.get())
         self.invoice_create_error_check(self.descentrybox3.get(
-        ), self.amountentrybox3.get(), self.priceentrybox3.get())
+        ), self.quantityentrybox3.get(), self.priceentrybox3.get())
         if str(self.select_job.get()) == "Select Job to create invoice for:":
             messagebox.showerror(
                 "An error occured", "Please select a job to create the invoice for. If there is no job, please create one")
@@ -756,16 +756,11 @@ class invoice_creation:
                 self.errorchecknum += 1
 
         if self.invoicelinecheck == 4:
-            messagebox.showerror("An error occured", "Please write down atleast 1 line for your invoice")
-        
+            messagebox.showerror(
+                "An error occured", "Please write down atleast 1 line for your invoice")
+
         if self.errorchecknum == 0:
-            
-            
-            
-            
-            
-            
-            
+
             with open("jobs.json", "r") as l:
                 all_jobs = json.load(l)
                 for job in all_jobs:
@@ -777,26 +772,26 @@ class invoice_creation:
             with open("jobs.json", "w") as p:
                 json.dump(all_jobs, p)
 
-    def invoice_create_error_check(self, desc, amount, price):
+    def invoice_create_error_check(self, desc, quantity, price):
 
-        if (desc or amount or price) and not (desc and amount and price):
+        if (desc or quantity or price) and not (desc and quantity and price):
             messagebox.showerror(
-                "An error occured", f"Please input all 3 inputs (Description, Amount, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n Amount: {amount} \n Price: {price}")
+                "An error occured", f"Please input all 3 inputs (Description, quantity, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n quantity: {quantity} \n Price: {price}")
             self.errorchecknum += 1
 
-        if desc and amount and price == "":
+        if desc and quantity and price == "":
             self.invoicelinecheck += 1
 
-        if amount == "":
+        if quantity == "":
             pass
 
         else:
             try:
-                float(amount)
+                float(quantity)
 
             except ValueError:
                 messagebox.showerror(
-                    "An error occured", "Please make sure that the amount is a number and contains no other characters")
+                    "An error occured", "Please make sure that the quantity is a number and contains no other characters")
                 self.errorchecknum += 1
 
         if price == "":
@@ -825,9 +820,9 @@ class invoice_creation:
                 "An error occured", "Too many characters in Description, please shorten it to 200 or under")
             self.errorchecknum += 1
 
-        if len(amount) > 8:
+        if len(quantity) > 8:
             messagebox.showerror(
-                "An error occured", "Too many characters in Amount, please shorten it to 8 or under")
+                "An error occured", "Too many characters in quantity, please shorten it to 8 or under")
             self.errorchecknum += 1
 
         if len(price) > 12:
@@ -837,10 +832,10 @@ class invoice_creation:
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
-        self.amountentrybox.destroy()
-        self.amountentrybox1.destroy()
-        self.amountentrybox2.destroy()
-        self.amountentrybox3.destroy()
+        self.quantityentrybox.destroy()
+        self.quantityentrybox1.destroy()
+        self.quantityentrybox2.destroy()
+        self.quantityentrybox3.destroy()
         self.descentrybox.destroy()
         self.descentrybox1.destroy()
         self.descentrybox2.destroy()
@@ -850,7 +845,7 @@ class invoice_creation:
         self.priceentrybox2.destroy()
         self.priceentrybox3.destroy()
         self.desclabel.destroy()
-        self.amountlabel.destroy()
+        self.quantitylabel.destroy()
         self.pricelabel.destroy()
         self.createinvoice_button.destroy()
         self.invoicecreationtext.destroy()
