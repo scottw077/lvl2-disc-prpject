@@ -1,11 +1,11 @@
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 
 
-def create_invoice(job_number, client_name, client_address, client_phone, date, items, subtotal, total, pdf_file, gst):
+def create_invoice(job_number, client_name, client_address, client_phone, email, date, items, subtotal, total, pdf_file, gst):
     doc = SimpleDocTemplate(pdf_file, pagesize=letter)
 
     # Create a list to hold the invoice elements
@@ -17,17 +17,27 @@ def create_invoice(job_number, client_name, client_address, client_phone, date, 
     # Invoice header
     header = Paragraph("Invoice", styles['Heading1'])
     elements.append(header)
+    test234 = styles['Heading5']
+    test234.alignment = 2
+    test123 = Paragraph("Date: {}".format(date), test234)
+    elements.append(test123)
     elements.append(
-        Paragraph("Job Number: {}".format(job_number), styles['Normal']))
-    elements.append(Paragraph("Date: {}".format(date), styles['Normal']))
+        Paragraph("Job Number: {}".format(job_number), test234))
+    
+    elements.append(Paragraph("Invoice Billed to:", styles['Heading4']))
     elements.append(
-        Paragraph("Client Name: {}".format(client_name), styles['Normal']))
-    elements.append(Paragraph("Client Address: {}".format(
+        Paragraph("Name: {}".format(client_name), styles['Normal']))
+    elements.append(Paragraph("Address: {}".format(
         client_address), styles['Normal']))
-    elements.append(Paragraph("Client Phone: {}".format(
+    elements.append(Paragraph("Phone: {}".format(
         client_phone), styles['Normal']))
+    elements.append(Paragraph("Email: {}".format(
+        email), styles['Normal']))
 
     # Itemized list
+    spacer = Spacer(1, 40)
+    elements.append(spacer)
+    
     data = [["Description", "Quantity", "Unit Price", "GST", "Total"]]
     for item in items:
         data.append([item["description"], item["quantity"],
@@ -49,6 +59,8 @@ def create_invoice(job_number, client_name, client_address, client_phone, date, 
     elements.append(table)
 
     # Subtotal and Total
+    elements.append(spacer)
+    
     elements.append(
         Paragraph("Subtotal: ${:.2f}".format(subtotal), styles['Heading4']))
     elements.append(Paragraph("GST: ${:.2f}".format(gst), styles['Heading4']))
@@ -65,8 +77,9 @@ if __name__ == "__main__":
     client_name = "John Doe"
     client_address = "123 Main Street"
     client_phone = "555-555-5555"
+    email = "test@gmail.com"
     date = "2023-09-05"
-    items = [
+    items = [ 
         {"description": "Description 1", "quantity": 2,
             "unit_price": 50.00, "GST": 15.00, "total": 115.00},
         {"description": "Description 2", "quantity": 3,
@@ -78,7 +91,7 @@ if __name__ == "__main__":
 
     total = sum(item["total"] for item in items)
 
-    pdf_file = "invoice_with_items5.pdf"
+    pdf_file = "invoice_with_items7.pdf"
 
     create_invoice(job_number, client_name, client_address,
-                   client_phone, date, items, subtotal, total, pdf_file, gst)
+                   client_phone, email, date, items, subtotal, total, pdf_file, gst)
