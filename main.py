@@ -4,7 +4,10 @@ import json
 import datetime
 import hashlib
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.units import inch
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -760,17 +763,113 @@ class invoice_creation:
                 "An error occured", "Please write down atleast 1 line for your invoice")
 
         if self.errorchecknum == 0:
+            lines = []
+            self.line_check(self.descentrybox.get(), self.quantityentrybox.get(), self.priceentrybox.get(), lines)
+            self.line_check(self.descentrybox1.get(), self.quantityentrybox1.get(), self.priceentrybox1.get(), lines)
+            self.line_check(self.descentrybox2.get(), self.quantityentrybox2.get(), self.priceentrybox2.get(), lines)
+            self.line_check(self.descentrybox3.get(), self.quantityentrybox3.get(), self.priceentrybox3.get(), lines)
 
+            
             with open("jobs.json", "r") as l:
                 all_jobs = json.load(l)
                 for job in all_jobs:
                     if job[0] == self.username:
                         if int(job[1]) == int(self.select_job.get()[1]):
-                            test123 = all_jobs.index(job)
-                            all_jobs.pop(test123)
+                            name = job[2]
+                            address = job[5]
+                            phone_number = job[4]
+                            email = job[3]
+            
+            current_datetime = datetime.datetime.now()
 
-            with open("jobs.json", "w") as p:
-                json.dump(all_jobs, p)
+            formatted_date = current_datetime.strftime("%d / %m / %Y")
+            
+            subtotal = sum(line["quantity"] * line["unit_price"] for line in lines)
+
+            gst = sum(line["GST"] for line in lines)
+
+            total = sum(line["total"] for line in lines)
+            
+            pdf_file = "invoice_with_items10.pdf"
+
+
+            doc = SimpleDocTemplate(pdf_file, pagesize=letter)
+
+            pdftext = []
+
+            
+            styles = getSampleStyleSheet()
+
+            
+            header = Paragraph("Invoice", styles['Heading1'])
+            pdftext.append(header)
+            right_align = styles['Heading5']
+            right_align.alignment = 2
+            datetext = Paragraph("Date: {}".format(formatted_date), right_align)
+            pdftext.append(datetext)
+            pdftext.append(
+                Paragraph("Job Number: {}".format(int(self.select_job.get()[1])), right_align))
+            
+            pdftext.append(Paragraph("Invoice Billed to:", styles['Heading4']))
+            pdftext.append(
+                Paragraph("Name: {}".format(name), styles['Normal']))
+            pdftext.append(Paragraph("Address: {}".format(
+                address), styles['Normal']))
+            pdftext.append(Paragraph("Phone: {}".format(
+                phone_number), styles['Normal']))
+            pdftext.append(Paragraph("Email: {}".format(
+                email), styles['Normal']))
+
+            # Itemized list
+            spacer = Spacer(1, 40)
+            pdftext.append(spacer)
+            
+            data = [["Description", "Quantity", "Unit Price", "GST", "Total"]]
+            for line in lines:
+                data.append([line["description"], line["quantity"],
+                            '${:.2f}'.format(line["unit_price"]), '${:.2f}'.format(line["GST"]), '${:.2f}'.format(line["total"])])
+
+            # Create a table for the itemized list
+            table = Table(data, colWidths=[4*inch, 1 *
+                        inch, 1*inch, 1*inch, 1.5*inch])
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ]))
+
+            pdftext.append(table)
+
+            # Subtotal and Total
+            pdftext.append(spacer)
+            
+            pdftext.append(
+                Paragraph("Subtotal: ${:.2f}".format(subtotal), styles['Heading4']))
+            pdftext.append(Paragraph("GST: ${:.2f}".format(gst), styles['Heading4']))
+
+            pdftext.append(
+                Paragraph("Total: ${:.2f}".format(total), styles['Heading2']))
+
+            # Build the PDF
+            doc.build(pdftext)
+
+
+            
+
+            # with open("jobs.json", "r") as l:
+            #     all_jobs = json.load(l)
+            #     for job in all_jobs:
+            #         if job[0] == self.username:
+            #             if int(job[1]) == int(self.select_job.get()[1]):
+            #                 test123 = all_jobs.index(job)
+            #                 all_jobs.pop(test123)
+
+            # with open("jobs.json", "w") as p:
+            #     json.dump(all_jobs, p)
 
     def invoice_create_error_check(self, desc, quantity, price):
 
@@ -799,20 +898,27 @@ class invoice_creation:
 
         else:
             try:
-                float(price[1:])
-                if price[0] == "$":
-                    pass
-                elif price[0].isnumeric():
-                    pass
-
-                else:
-                    messagebox.showerror(
+                if len(price) == 1:
+                    if price.isnumeric():
+                        pass
+                    else:
+                        messagebox.showerror(
                         "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
-                    self.errorchecknum += 1
+                else:
+                    float(price[1:])
+                    if price[0] == "$":
+                        pass
+                    elif price[0].isnumeric():
+                        pass
+
+                    else:
+                        messagebox.showerror(
+                            "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                        self.errorchecknum += 1
 
             except ValueError:
                 messagebox.showerror(
-                    "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                    "An error occured", "Please make sure that the price is a number and contains no other characters other than $ sym")
                 self.errorchecknum += 1
 
         if len(desc) > 200:
@@ -829,6 +935,32 @@ class invoice_creation:
             messagebox.showerror(
                 "An error occured", "Too many characters in Price, please shorten it to 12 or under")
             self.errorchecknum += 1
+
+    def line_check(self, desc, quantity, price, lines):
+        if desc == "":
+            pass
+        else:
+            fquantity = float(quantity)
+            fprice = float(price)
+            total1 = fquantity * fprice
+
+            GST = 0
+            if self.r.get() == 1:
+                if self.gstinclexcl.get() == "GST Excluded":
+                    GST = total1 * .15
+                    total = total1 + GST             
+                else:
+                    GST = total1 - (total1/1.15)
+                    total = total1
+            else:
+                GST = 0
+                total = total1
+
+            linedict = {"description": desc, "quantity": float(quantity),
+            "unit_price": float(price), "GST": float(GST), "total": float(total)}
+            lines.append(linedict)
+            return lines
+
 
     def main_menu_return_passthrough(self):
         self.main_menu_return.destroy()
