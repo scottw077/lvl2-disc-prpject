@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox, ttk
+from tkinter import messagebox, ttk, filedialog
 import json
 import datetime
 import hashlib
@@ -790,7 +790,7 @@ class invoice_creation:
 
             total = sum(line["total"] for line in lines)
             
-            pdf_file = "invoice_with_items10.pdf"
+            pdf_file = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")], initialfile = f"invoice{self.select_job.get()[1]}")
 
 
             doc = SimpleDocTemplate(pdf_file, pagesize=letter)
@@ -855,21 +855,25 @@ class invoice_creation:
                 Paragraph("Total: ${:.2f}".format(total), styles['Heading2']))
 
             # Build the PDF
-            doc.build(pdftext)
+            if pdf_file:
+                doc.build(pdftext)
+                with open("jobs.json", "r") as l:
+                    all_jobs = json.load(l)
+                    for job in all_jobs:
+                        if job[0] == self.username:
+                            if int(job[1]) == int(self.select_job.get()[1]):
+                                test123 = all_jobs.index(job)
+                                all_jobs.pop(test123)
 
+                with open("jobs.json", "w") as p:
+                    json.dump(all_jobs, p)
+                
+                self.main_menu_return_passthrough()
 
             
 
-            # with open("jobs.json", "r") as l:
-            #     all_jobs = json.load(l)
-            #     for job in all_jobs:
-            #         if job[0] == self.username:
-            #             if int(job[1]) == int(self.select_job.get()[1]):
-            #                 test123 = all_jobs.index(job)
-            #                 all_jobs.pop(test123)
-
-            # with open("jobs.json", "w") as p:
-            #     json.dump(all_jobs, p)
+            
+            
 
     def invoice_create_error_check(self, desc, quantity, price):
 
