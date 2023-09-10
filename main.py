@@ -314,7 +314,8 @@ class add_job:
         self.root = master
         self.username = username
         self.main_menu_return = Button(
-            root, text="Return to Main Menu", command=lambda: main_menu_return(frame, self.main_menu_return))
+            root, text="Return to Main Menu", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=lambda: main_menu_return(frame, self.main_menu_return))
         self.main_menu_return.place(x=672, y=8)
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
@@ -392,7 +393,8 @@ class add_job:
                 frame1.grid(row=0, column=3)
 
                 main_menu_return1 = Button(
-                    root, text="Return to Main Menu", command=lambda: main_menu_return(frame1, main_menu_return1))
+                    root, text="Return to Main Menu", padx=2, pady=2, font=(
+            "Arial 8 bold"),command=lambda: main_menu_return(frame1, main_menu_return1))
                 main_menu_return1.place(x=672, y=8)
 
                 addjobtxt = Label(frame1, text="Add Job", font=(
@@ -488,6 +490,67 @@ class staff_tracker:
         with open("jobs.json") as d:
             jobs = json.load(d)
 
+        self.staff_frame = Frame(root)
+        self.staff_frame.place(x=20, y=106)
+
+        style = ttk.Style()
+        style.configure("Treeview", background="#5b5b5c")
+
+        with open("jobs.json") as k:
+            all_jobs = json.load(k)
+
+        jobs = []
+
+        for job in all_jobs:
+            if job[0] == username:
+                jobs.append(job[1:])
+
+        staff = []
+
+        with open("staff.json") as g:
+            all_staff = json.load(g)
+        
+        for staff_item in all_staff:
+            if staff_item[0] == username:
+                staff.append(staff_item[1])
+        
+        
+        self.stafftable = ttk.Treeview(self.staff_frame, height=len(jobs))
+
+        self.stafftable['columns'] = (staff)
+
+        self.stafftable.column("#0", width=0,  stretch=NO)
+        for staff_test in staff:
+            self.stafftable.column(staff_test, anchor=CENTER)
+            
+
+        self.stafftable.heading("#0", text="", anchor=CENTER)
+        for staff_name in staff:
+            self.stafftable.heading(staff_name, text=staff_name,
+                            anchor=CENTER)
+
+        num = 0
+
+        for all_job in jobs:
+            if all_job[7] in staff:
+                self.stafftable.insert(parent='', index='end', text='',
+                             values=str(all_job))
+        
+       
+
+        self.stafftable.grid(row=1, column=3)
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     def add_staff(self):
         self.addstaff.destroy()
         self.main_menu_return.destroy()
@@ -991,6 +1054,8 @@ class invoice_creation:
         self.spacer2.destroy()
         self.jobs_entry.destroy()
         self.addnewline.destroy()
+        self.removeline.destroy()
+
 
         if self.gstdroppeddown == True:
             self.gstdrowndown_menu.destroy()
