@@ -487,11 +487,8 @@ class staff_tracker:
             "Arial 8 bold"), command=self.add_staff)
         self.addstaff.place(x=10, y=15)
 
-        with open("jobs.json") as d:
-            jobs = json.load(d)
-
         self.staff_frame = Frame(root)
-        self.staff_frame.place(x=20, y=106)
+        self.staff_frame.place(x=20, y=80)
 
         style = ttk.Style()
         style.configure("Treeview", background="#5b5b5c")
@@ -502,9 +499,9 @@ class staff_tracker:
         jobs = []
 
         for job in all_jobs:
-            if job[0] == username:
+            if job[0] == self.username:
                 jobs.append(job[1:])
-
+    
         staff = []
 
         with open("staff.json") as g:
@@ -513,47 +510,65 @@ class staff_tracker:
         for staff_item in all_staff:
             if staff_item[0] == username:
                 staff.append(staff_item[1])
+
+        height_num = 0
         
+        for each_job in jobs:
+            if each_job[7] in staff:
+                height_num += 1
+
+        self.staff_table = ttk.Treeview(self.staff_frame, height=height_num)
         
-        self.stafftable = ttk.Treeview(self.staff_frame, height=len(jobs))
 
-        self.stafftable['columns'] = (staff)
+        self.staff_table['columns'] = ("staff",'job_num', 'name',
+                                'email', 'phe_num', 'address', "job_type", "job_status")
 
-        self.stafftable.column("#0", width=0,  stretch=NO)
-        for staff_test in staff:
-            self.stafftable.column(staff_test, anchor=CENTER)
-            
+        self.staff_table.column("#0", width=0,  stretch=NO)
+        self.staff_table.column("staff", anchor=CENTER, width= 88)
+        self.staff_table.column("job_num", anchor=CENTER, width=42)
+        self.staff_table.column("name", anchor=CENTER, width=110)
+        self.staff_table.column("email", anchor=CENTER, width=120)
+        self.staff_table.column("phe_num", anchor=CENTER, width=90)
+        self.staff_table.column("address", anchor=CENTER, width=100)
+        self.staff_table.column("job_type", anchor=CENTER, width=83)
+        self.staff_table.column("job_status", anchor=CENTER, width=110)
+        
 
-        self.stafftable.heading("#0", text="", anchor=CENTER)
-        for staff_name in staff:
-            self.stafftable.heading(staff_name, text=staff_name,
-                            anchor=CENTER)
-
-        num = 0
+        self.staff_table.heading("#0", text="", anchor=CENTER)
+        self.staff_table.heading("staff", text="Staff:")
+        self.staff_table.heading("job_num", text="Job #",
+                          anchor=CENTER)
+        self.staff_table.heading("name", text="Client Name",
+                          anchor=CENTER)
+        self.staff_table.heading("email", text="Email",
+                          anchor=CENTER)
+        self.staff_table.heading("phe_num", text="Phone Number",
+                          anchor=CENTER)
+        self.staff_table.heading("address", text="Address",
+                          anchor=CENTER)
+        self.staff_table.heading("job_type", text="Job Type",
+                          anchor=CENTER)
+        self.staff_table.heading("job_status", text="Job Status",
+                          anchor=CENTER)
+        
 
         for all_job in jobs:
             if all_job[7] in staff:
-                self.stafftable.insert(parent='', index='end', text='',
-                             values=str(all_job))
-        
-       
+                self.staff_table.insert(parent='', index='end', text='',
+                             values=(all_job[7], all_job[0], all_job[1], all_job[2], all_job[3], all_job[4], all_job[5], all_job[6]))
+                 
+        self.staff_vsb = ttk.Scrollbar(root, orient="vertical", command=self.staff_table.yview)
+        self.staff_table.configure(yscrollcommand=self.staff_vsb.set)
+        self.staff_vsb.place(x=764, y=80)
 
-        self.stafftable.grid(row=1, column=3)
-
-
-
-    
-    
-    
-    
-    
-    
-    
+        self.staff_table.grid(row=1, column=3)
     
     
     def add_staff(self):
         self.addstaff.destroy()
         self.main_menu_return.destroy()
+        self.stafftable.destroy()
+        self.staff_frame.destroy()
         self.addstafftxt = Label(root, text="Add Staff", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
         self.addstafftxt.grid(row=0, column=3)
@@ -585,7 +600,6 @@ class staff_tracker:
 
     def new_staff(self):
         staff = self.new_staff_entry.get()
-        print("test1")
         with open("staff.json", "r") as d:
             current_staff = json.load(d)
 
@@ -602,7 +616,6 @@ class staff_tracker:
         else:
             new_staff = [self.username, staff]
             current_staff.append(new_staff)
-            print(current_staff)
             with open("staff.json", "w") as c:
                 json.dump(current_staff, c)
             messagebox.showinfo(
@@ -622,6 +635,9 @@ class staff_tracker:
     def main_menu_btn(self):
         self.addstaff.destroy()
         self.main_menu_return.destroy()
+        self.staff_table.destroy()
+        self.staff_frame.destroy()
+        self.staff_vsb.destroy()
         main_menu(root, self.username)
 
 
