@@ -567,8 +567,9 @@ class staff_tracker:
     def add_staff(self):
         self.addstaff.destroy()
         self.main_menu_return.destroy()
-        self.stafftable.destroy()
+        self.staff_table.destroy()
         self.staff_frame.destroy()
+        self.staff_vsb.destroy()
         self.addstafftxt = Label(root, text="Add Staff", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
         self.addstafftxt.grid(row=0, column=3)
@@ -949,16 +950,13 @@ class invoice_creation:
                 
                 self.main_menu_return_passthrough()
 
-            
-
-            
-            
-
     def invoice_create_error_check(self, desc, quantity, price):
 
         if (desc or quantity or price) and not (desc and quantity and price):
             messagebox.showerror(
-                "An error occured", f"Please input all 3 inputs (Description, quantity, and Price) for each line you write. \n Line that caused the Error: \n Description: {desc} \n quantity: {quantity} \n Price: {price}")
+                "An error occured", f"Please input all 3 inputs (Description, quantity, "
+                f"and Price) for each line you write. \n Line that caused the Error: \n" 
+                f"Description: {desc} \n quantity: {quantity} \n Price: {price}")
             self.errorchecknum += 1
 
         if desc and quantity and price == "":
@@ -986,7 +984,8 @@ class invoice_creation:
                         pass
                     else:
                         messagebox.showerror(
-                        "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                        "An error occured", "Please make sure that the price is a"
+                        "number and contains no other characters other than $ symbol")
                 else:
                     float(price[1:])
                     if price[0] == "$":
@@ -996,7 +995,8 @@ class invoice_creation:
 
                     else:
                         messagebox.showerror(
-                            "An error occured", "Please make sure that the price is a number and contains no other characters other than $ symbol")
+                            "An error occured", "Please make sure that the price is" 
+                            "a number and contains no other characters other than $ symbol")
                         self.errorchecknum += 1
 
             except ValueError:
@@ -1006,17 +1006,20 @@ class invoice_creation:
 
         if len(desc) > 200:
             messagebox.showerror(
-                "An error occured", "Too many characters in Description, please shorten it to 200 or under")
+                "An error occured", "Too many characters in" 
+                "Description, please shorten it to 200 or under")
             self.errorchecknum += 1
 
         if len(quantity) > 8:
             messagebox.showerror(
-                "An error occured", "Too many characters in quantity, please shorten it to 8 or under")
+                "An error occured", "Too many characters" 
+                "in quantity, please shorten it to 8 or under")
             self.errorchecknum += 1
 
         if len(price) > 12:
             messagebox.showerror(
-                "An error occured", "Too many characters in Price, please shorten it to 12 or under")
+                "An error occured", "Too many characters in" 
+                "Price, please shorten it to 12 or under")
             self.errorchecknum += 1
 
     def line_check(self, desc, quantity, price, lines):
@@ -1027,20 +1030,20 @@ class invoice_creation:
             fprice = float(price)
             total1 = fquantity * fprice
 
-            GST = 0
+            gst = 0
             if self.r.get() == 1:
                 if self.gstinclexcl.get() == "GST Excluded":
-                    GST = total1 * .15
-                    total = total1 + GST             
+                    gst = total1 * .15
+                    total = total1 + gst             
                 else:
-                    GST = total1 - (total1/1.15)
+                    gst = total1 - (total1/1.15)
                     total = total1
             else:
-                GST = 0
+                gst = 0
                 total = total1
 
             linedict = {"description": desc, "quantity": float(quantity),
-            "unit_price": float(price), "GST": float(GST), "total": float(total)}
+            "unit_price": float(price), "GST": float(gst), "total": float(total)}
             lines.append(linedict)
             return lines
 
