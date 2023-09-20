@@ -52,8 +52,10 @@ class signup:
         self.spacer3.grid(row=9, column=3)
 
         self.sign_upbutton = Button(root, text="Sign Up", padx=30,
-                                    pady=10, font=("Arial 12 bold"), borderwidth=6, command=lambda: signup_process
-                                    (self.username_entry.get(), self.password.get(), self.confirmpassword.get()))
+                                    pady=10, font=("Arial 12 bold"), 
+                                    borderwidth=6, command=lambda: signup_process
+                                    (self.username_entry.get(), self.password.get(), 
+                                     self.confirmpassword.get()))
         self.sign_upbutton.grid(row=10, column=3)
 
         self.spacer3 = Label(root, text="", bg="#5b5b5c")
@@ -66,8 +68,8 @@ class signup:
 
         def signup_process(username, pwd, confirmpwd):
 
-            with open("usernames.json") as c:
-                userpass = json.load(c)
+            with open("usernames.json", encoding="UTF-8") as json_usernames:
+                userpass = json.load(json_usernames)
                 users = [user[0]for user in userpass]
             if " " in username:
                 messagebox.showerror(
@@ -96,7 +98,7 @@ class signup:
                 new_user = [username, str(hashed_pwd)]
                 userpass.append(new_user)
 
-                with open("usernames.json", "w") as j:
+                with open("usernames.json", "w", encoding="UTF-8") as j:
                     json.dump(userpass, j)
                 messagebox.showinfo("Success!", "Sucessfully Signed Up")
                 self.signuptxt.destroy()
@@ -110,7 +112,8 @@ class signup:
                 self.confirmpassword.destroy()
                 self.spacer3.destroy()
                 self.sign_upbutton.destroy()
-                login(root)
+                self.login_pass_through_btn.destroy()
+                Login(root)
 
     def login_pass_through(self):
         self.signuptxt.destroy()
@@ -125,10 +128,10 @@ class signup:
         self.spacer3.destroy()
         self.sign_upbutton.destroy()
         self.login_pass_through_btn.destroy()
-        login(root)
+        Login(root)
 
 
-class login:
+class Login:
     def __init__(self, master):
         self.root = master
         self.logintxt = Label(root, text="Login", font=(
@@ -154,7 +157,8 @@ class login:
         self.spacer2.grid(row=6, column=3)
 
         self.login_button = Button(root, text="Login", padx=30,
-                                   pady=10, font=("Arial 12 bold"), borderwidth=6,  command=lambda: login_process
+                                   pady=10, font=("Arial 12 bold"), borderwidth=6,  
+                                   command=lambda: login_process
                                    (self.user_entry.get(), self.pwd_entry.get()))
         self.login_button.grid(row=8, column=3)
 
@@ -167,8 +171,8 @@ class login:
         self.sign_up_pass_btn.grid(row=10, column=3)
 
         def login_process(username, password):
-            with open("usernames.json") as c:
-                userpass = json.load(c)
+            with open("usernames.json", encoding="UTF-8") as username_json:
+                userpass = json.load(username_json)
                 users = [user[0]for user in userpass]
 
             if "" == username:
@@ -179,8 +183,8 @@ class login:
 
             elif username in users:
                 position = users.index(username)
-                pw = str(password).encode("utf-8")
-                entry_hashed_pw = hashlib.sha256(pw).hexdigest()
+                passw = str(password).encode("utf-8")
+                entry_hashed_pw = hashlib.sha256(passw).hexdigest()
 
                 if entry_hashed_pw == userpass[position][1]:
                     self.logintxt.destroy()
@@ -192,7 +196,7 @@ class login:
                     self.spacer2.destroy()
                     self.login_button.destroy()
                     self.sign_up_pass_btn.destroy()
-                    main_menu(root, username)
+                    MainMenu(root, username)
 
                 else:
                     messagebox.showerror(
@@ -214,7 +218,7 @@ class login:
         signup(root)
 
 
-class main_menu:
+class MainMenu:
     def __init__(self, master, username):
         self.root = master
         self.username = username
@@ -236,7 +240,7 @@ class main_menu:
         style = ttk.Style()
         style.configure("Treeview", background="#5b5b5c")
 
-        with open("jobs.json") as k:
+        with open("jobs.json", encoding="UTF-8") as k:
             all_jobs = json.load(k)
 
         jobs = []
@@ -261,22 +265,14 @@ class main_menu:
         self.jobs.column("staff", anchor=CENTER, width=88)
 
         self.jobs.heading("#0", text="", anchor=CENTER)
-        self.jobs.heading("job_num", text="Job #",
-                          anchor=CENTER)
-        self.jobs.heading("name", text="Client Name",
-                          anchor=CENTER)
-        self.jobs.heading("email", text="Email",
-                          anchor=CENTER)
-        self.jobs.heading("phe_num", text="Phone Number",
-                          anchor=CENTER)
-        self.jobs.heading("address", text="Address",
-                          anchor=CENTER)
-        self.jobs.heading("job_type", text="Job Type",
-                          anchor=CENTER)
-        self.jobs.heading("job_status", text="Job Status",
-                          anchor=CENTER)
-        self.jobs.heading("staff", text="Staff",
-                          anchor=CENTER)
+        self.jobs.heading("job_num", text="Job #",anchor=CENTER)
+        self.jobs.heading("name", text="Client Name",anchor=CENTER)
+        self.jobs.heading("email", text="Email",anchor=CENTER)
+        self.jobs.heading("phe_num", text="Phone Number",anchor=CENTER)
+        self.jobs.heading("address", text="Address",anchor=CENTER)
+        self.jobs.heading("job_type", text="Job Type",anchor=CENTER)
+        self.jobs.heading("job_status", text="Job Status",anchor=CENTER)
+        self.jobs.heading("staff", text="Staff",anchor=CENTER)
 
         num = 0
 
@@ -406,7 +402,7 @@ class add_job:
                 jobtype_txt.grid(row=2, column=3)
                 jobtype_default = StringVar()
                 jobtype_default.set("Select Job Type")
-                job_types = ["monday", "tuesday", "wednesday"]
+                job_types = ["Charge Up", "Quote", "Estimate"]
                 jobtype_entry = OptionMenu(frame1, jobtype_default, *job_types)
                 jobtype_entry.grid(row=3, column=3)
 
@@ -418,7 +414,7 @@ class add_job:
                 jobstatus_txt.grid(row=5, column=3)
                 jobstatus_default = StringVar()
                 jobstatus_default.set("Select Job Status")
-                job_statuses = ["started", "half-way through", "finished"]
+                job_statuses = ["In Progress", "Scheduled", "Pending", "On Hold", "Completed"]
                 jobstatus_entry = OptionMenu(
                     frame1, jobstatus_default, *job_statuses)
                 jobstatus_entry.grid(row=6, column=3)
@@ -431,7 +427,7 @@ class add_job:
                 staff_txt.grid(row=8, column=3)
                 staff_default = StringVar()
                 staff_default.set("Select Staff")
-                with open("staff.json") as d:
+                with open("staff.json", encoding="UTF-8") as d:
                     all_staff = json.load(d)
 
                 staff = []
@@ -446,13 +442,17 @@ class add_job:
                 spacer3 = Label(frame1, text="", bg="#5b5b5c")
                 spacer3.grid(row=10, column=3)
 
-                add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, font=("Arial 12 bold"), command=lambda: add_job_process(
-                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), staff_default.get(), frame1, main_menu_return1))
+                add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, 
+                    font=("Arial 12 bold"), command=lambda: add_job_process(
+                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), 
+                    staff_default.get(), frame1, main_menu_return1))
+                
                 add_job_btn.grid(row=11, column=3)
 
-        def add_job_process(name, email, phnenum, address, job_type, job_status, staff, frame, return_button):
-            with open("jobs.json", "r") as h:
-                existing_jobs = json.load(h)
+        def add_job_process(name, email, phnenum, address, job_type, 
+                            job_status, staff, frame, return_button):
+            with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
+                existing_jobs = json.load(json_jobs)
 
             job_num = 0
             for job in existing_jobs:
@@ -463,17 +463,17 @@ class add_job:
                        address, job_type, job_status, staff]
 
             existing_jobs.append(new_job)
-            with open("jobs.json", "w") as j:
+            with open("jobs.json", "w", encoding="UTF-8") as j:
                 json.dump(existing_jobs, j)
             messagebox.showinfo("Success!", "Sucessfully Added Job!")
             frame.grid_forget()
             return_button.destroy()
-            main_menu(root, username)
+            MainMenu(root, username)
 
         def main_menu_return(frame, return_button):
             frame.grid_forget()
             return_button.destroy()
-            main_menu(root, self.username)
+            MainMenu(root, self.username)
 
 
 class staff_tracker:
@@ -493,7 +493,7 @@ class staff_tracker:
         style = ttk.Style()
         style.configure("Treeview", background="#5b5b5c")
 
-        with open("jobs.json") as k:
+        with open("jobs.json", encoding="UTF-8") as k:
             all_jobs = json.load(k)
 
         jobs = []
@@ -504,7 +504,7 @@ class staff_tracker:
     
         staff = []
 
-        with open("staff.json") as g:
+        with open("staff.json", encoding="UTF-8") as g:
             all_staff = json.load(g)
         
         for staff_item in all_staff:
@@ -519,7 +519,6 @@ class staff_tracker:
 
         self.staff_table = ttk.Treeview(self.staff_frame, height=height_num)
         
-
         self.staff_table['columns'] = ("staff",'job_num', 'name',
                                 'email', 'phe_num', 'address', "job_type", "job_status")
 
@@ -533,7 +532,6 @@ class staff_tracker:
         self.staff_table.column("job_type", anchor=CENTER, width=83)
         self.staff_table.column("job_status", anchor=CENTER, width=110)
         
-
         self.staff_table.heading("#0", text="", anchor=CENTER)
         self.staff_table.heading("staff", text="Staff:")
         self.staff_table.heading("job_num", text="Job #",
@@ -551,7 +549,6 @@ class staff_tracker:
         self.staff_table.heading("job_status", text="Job Status",
                           anchor=CENTER)
         
-
         for all_job in jobs:
             if all_job[7] in staff:
                 self.staff_table.insert(parent='', index='end', text='',
@@ -601,7 +598,7 @@ class staff_tracker:
 
     def new_staff(self):
         staff = self.new_staff_entry.get()
-        with open("staff.json", "r") as d:
+        with open("staff.json", "r", encoding="UTF-8") as d:
             current_staff = json.load(d)
 
         for name in current_staff:
@@ -617,7 +614,7 @@ class staff_tracker:
         else:
             new_staff = [self.username, staff]
             current_staff.append(new_staff)
-            with open("staff.json", "w") as c:
+            with open("staff.json", "w", encoding="UTF-8") as c:
                 json.dump(current_staff, c)
             messagebox.showinfo(
                 "Success!", "Successfully added {}!".format(staff))
@@ -639,7 +636,7 @@ class staff_tracker:
         self.staff_table.destroy()
         self.staff_frame.destroy()
         self.staff_vsb.destroy()
-        main_menu(root, self.username)
+        MainMenu(root, self.username)
 
 
 class invoice_creation:
@@ -649,7 +646,7 @@ class invoice_creation:
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_return_passthrough)
         self.main_menu_return.place(x=665, y=15)
-        with open("jobs.json", "r") as d:
+        with open("jobs.json", "r", encoding="UTF-8") as d:
             all_jobs = json.load(d)
             users_jobs = []
             display_jobs = []
@@ -686,8 +683,8 @@ class invoice_creation:
 
         self.gstdroppeddown = False
 
-        self.gsttxt = Label(root, text="Do you charge GST?", font=(
-            "Arial 12 bold"), fg="white", bg="#5b5b5c")
+        self.gsttxt = Label(root, text="Do you charge GST?", font=
+            "Arial 12 bold", fg="white", bg="#5b5b5c")
         self.gsttxt.grid(row=1, column=3)
 
         self.gstbutton1 = Radiobutton(
@@ -698,15 +695,15 @@ class invoice_creation:
         self.gstbutton2.grid(row=3, column=3)
 
         self.desclabel = Label(root, text="Description",
-                               bg="#5b5b5c", font=("Arial 11"))
+                               bg="#5b5b5c", font="Arial 11")
         self.desclabel.place(x=8, y=240)
 
         self.quantitylabel = Label(
-            root, text="Quantity", bg="#5b5b5c", font=("Arial 11"))
+            root, text="Quantity", bg="#5b5b5c", font="Arial 11")
         self.quantitylabel.place(x=550, y=240)
 
         self.pricelabel = Label(
-            root, text="Price", bg="#5b5b5c", font=("Arial 11"))
+            root, text="Price", bg="#5b5b5c", font="Arial 11")
         self.pricelabel.place(x=675, y=240)
 
         self.descentrybox = Entry(root, width=85)
@@ -741,7 +738,7 @@ class invoice_creation:
         self.removeline.place(x=600, y=200)
 
         self.createinvoice_button = Button(root, text="Create Invoice", padx=30,
-                                           pady=10, font=("Arial 12 bold"), borderwidth=6, command=self.invoice_create)
+                                           pady=10, font="Arial 12 bold", borderwidth=6, command=self.invoice_create)
         self.createinvoice_button.place(x=310, y=380)
 
         self.gstinclexcl = StringVar()
@@ -751,7 +748,7 @@ class invoice_creation:
             root, self.gstinclexcl, *gstoptions)
 
     def gst_dropdown(self):
-        self.gstdroppeddown = True
+        self.gstdroppeddown == True
         self.gstdrowndown_menu.place(x=8, y=150)
 
     def destroy_gstdropdown(self):
@@ -850,7 +847,7 @@ class invoice_creation:
             self.line_check(self.descentrybox3.get(), self.quantityentrybox3.get(), self.priceentrybox3.get(), lines)
 
             
-            with open("jobs.json", "r") as l:
+            with open("jobs.json", "r", encoding="UTF-8") as l:
                 all_jobs = json.load(l)
                 for job in all_jobs:
                     if job[0] == self.username:
@@ -872,15 +869,12 @@ class invoice_creation:
             
             pdf_file = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")], initialfile = f"invoice{self.select_job.get()[1]}")
 
-
             doc = SimpleDocTemplate(pdf_file, pagesize=letter)
 
             pdftext = []
-
             
             styles = getSampleStyleSheet()
 
-            
             header = Paragraph("Invoice", styles['Heading1'])
             pdftext.append(header)
             right_align = styles['Heading5']
@@ -937,7 +931,7 @@ class invoice_creation:
             # Build the PDF
             if pdf_file:
                 doc.build(pdftext)
-                with open("jobs.json", "r") as l:
+                with open("jobs.json", "r", encoding="UTF-8") as l:
                     all_jobs = json.load(l)
                     for job in all_jobs:
                         if job[0] == self.username:
@@ -945,7 +939,7 @@ class invoice_creation:
                                 test123 = all_jobs.index(job)
                                 all_jobs.pop(test123)
 
-                with open("jobs.json", "w") as p:
+                with open("jobs.json", "w", encoding="UTF-8") as p:
                     json.dump(all_jobs, p)
                 
                 self.main_menu_return_passthrough()
@@ -1082,11 +1076,11 @@ class invoice_creation:
         if self.num >= 4:
             self.maxlineerror.destroy()
 
-        main_menu(root, self.username)
+        MainMenu(root, self.username)
 
 
 def main():
-    login(root)
+    Login(root)
     root.mainloop()
 
 
