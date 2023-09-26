@@ -284,11 +284,21 @@ class MainMenu:
         self.jobs.grid(row=1, column=3)
 
     def add_job(self):
-        self.add_job_btn.destroy()
-        self.staff_tracker_btn.destroy()
-        self.create_invoice_btn.destroy()
-        self.jobs_frame.destroy()
-        add_job(root, self.username)
+        with open("staff.json", encoding="UTF-8") as d:
+            all_staff = json.load(d)
+            staff = []
+            for indiv_staff in all_staff:
+                if indiv_staff[0] == self.username:
+                    staff.append(indiv_staff[1])
+        if len(staff) == 0:
+            messagebox.showinfo("No staff found!", "You must have staff before you create a " 
+                                "job! Please navigate to 'Staff Tracker' to create new staff")
+        else:
+            self.add_job_btn.destroy()
+            self.staff_tracker_btn.destroy()
+            self.create_invoice_btn.destroy()
+            self.jobs_frame.destroy()
+            add_job(root, self.username)
 
     def staff_tracker(self):
         self.add_job_btn.destroy()
@@ -298,11 +308,23 @@ class MainMenu:
         staff_tracker(root, self.username)
 
     def create_invoice(self):
-        self.add_job_btn.destroy()
-        self.staff_tracker_btn.destroy()
-        self.create_invoice_btn.destroy()
-        self.jobs_frame.destroy()
-        invoice_creation(root, self.username)
+        with open("jobs.json", "r", encoding="UTF-8") as d:
+            all_jobs = json.load(d)
+            users_jobs = []
+            for job in all_jobs:
+                if job[0] == self.username:
+                    users_jobs.append(job[1:])
+        
+        if len(users_jobs) == 0:
+            messagebox.showinfo("No jobs found!", 'You must have jobs before '
+                                'you create an invoice, please naviagate to "Add Job"' )
+        
+        else:
+            self.add_job_btn.destroy()
+            self.staff_tracker_btn.destroy()
+            self.create_invoice_btn.destroy()
+            self.jobs_frame.destroy()
+            invoice_creation(root, self.username)
 
 
 class add_job:
@@ -595,7 +617,11 @@ class staff_tracker:
         self.next_btn = Button(root, text="Add Staff", padx=30,
                                pady=10, font=("Arial 12 bold"), borderwidth=6,  command=self.new_staff)
         self.next_btn.grid(row=9, column=3)
-
+        self.staff_tracker = Button(root, text="Return to Staff Tracker", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.destroy_new_staff)
+        self.staff_tracker.place(x=658, y=15)
+    
+    
     def new_staff(self):
         staff = self.new_staff_entry.get()
         with open("staff.json", "r", encoding="UTF-8") as d:
@@ -618,7 +644,10 @@ class staff_tracker:
                 json.dump(current_staff, c)
             messagebox.showinfo(
                 "Success!", "Successfully added {}!".format(staff))
-
+            self.destroy_new_staff()
+    
+    
+    def destroy_new_staff(self):    
         self.addstafftxt.destroy()
         self.spacer1.destroy()
         self.spacer2.destroy()
@@ -628,6 +657,7 @@ class staff_tracker:
         self.spacer4.destroy()
         self.spacer5.destroy()
         self.next_btn.destroy()
+        self.staff_tracker.destroy()
         staff_tracker(root, self.username)
 
     def main_menu_btn(self):
@@ -883,7 +913,6 @@ class invoice_creation:
             pdftext.append(datetext)
             pdftext.append(
                 Paragraph("Job Number: {}".format(int(self.select_job.get()[1])), right_align))
-            
             pdftext.append(Paragraph("Invoice Billed to:", styles['Heading4']))
             pdftext.append(
                 Paragraph("Name: {}".format(name), styles['Normal']))
@@ -891,8 +920,8 @@ class invoice_creation:
                 address), styles['Normal']))
             pdftext.append(Paragraph("Phone: {}".format(
                 phone_number), styles['Normal']))
-            pdftext.append(Paragraph("Email: {}".format(
-                email), styles['Normal']))
+            pdftext.append(f(Paragraph("Email: {}".format(
+                email)), styles['Normal']))
 
             # Itemized list
             spacer = Spacer(1, 40)
