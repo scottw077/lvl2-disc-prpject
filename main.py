@@ -378,8 +378,10 @@ class add_job:
         spacer4 = Label(frame, text="", bg="#5b5b5c")
         spacer4.grid(row=13, column=3)
 
-        next_btn = Button(frame, text="Next", padx=30, pady=10, font=("Arial 12 bold"), command=lambda: add_job2(
-            name_entry.get(), email_entry.get(), phnenum_entry.get(), address_entry.get(), frame))
+        next_btn = Button(frame, text="Next", padx=30, pady=10, 
+                          font=("Arial 12 bold"), command=lambda: add_job2(
+                          name_entry.get(), email_entry.get(), 
+                          phnenum_entry.get(), address_entry.get(), frame))
         next_btn.grid(row=14, column=3)
 
         def add_job2(name, email, phnenum, address, frame):
@@ -574,12 +576,13 @@ class staff_tracker:
         for all_job in jobs:
             if all_job[7] in staff:
                 self.staff_table.insert(parent='', index='end', text='',
-                             values=(all_job[7], all_job[0], all_job[1], all_job[2], all_job[3], all_job[4], all_job[5], all_job[6]))
+                                        values=(all_job[7], all_job[0], all_job[1], 
+                                                all_job[2], all_job[3], all_job[4], 
+                                                all_job[5], all_job[6]))
                  
         self.staff_vsb = ttk.Scrollbar(root, orient="vertical", command=self.staff_table.yview)
         self.staff_table.configure(yscrollcommand=self.staff_vsb.set)
         self.staff_vsb.place(x=764, y=80)
-
         self.staff_table.grid(row=1, column=3)
     
     
@@ -920,8 +923,8 @@ class invoice_creation:
                 address), styles['Normal']))
             pdftext.append(Paragraph("Phone: {}".format(
                 phone_number), styles['Normal']))
-            pdftext.append(f(Paragraph("Email: {}".format(
-                email)), styles['Normal']))
+            pdftext.append(Paragraph("Email: {}".format(
+                email)), styles['Normal'])
 
             # Itemized list
             spacer = Spacer(1, 40)
@@ -1045,7 +1048,9 @@ class invoice_creation:
                 "Price, please shorten it to 12 or under")
             self.errorchecknum += 1
 
+     
     def line_check(self, desc, quantity, price, lines):
+        """"""
         if desc == "":
             pass
         else:
@@ -1070,8 +1075,8 @@ class invoice_creation:
             lines.append(linedict)
             return lines
 
-
     def main_menu_return_passthrough(self):
+        """Function destroys everything in create invoice and then runs MainMenu"""
         self.main_menu_return.destroy()
         self.quantityentrybox.destroy()
         self.quantityentrybox1.destroy()
@@ -1099,7 +1104,7 @@ class invoice_creation:
         self.removeline.destroy()
 
 
-        if self.gstdroppeddown == True:
+        if self.gstdroppeddown is True:
             self.gstdrowndown_menu.destroy()
 
         if self.num >= 4:
@@ -1109,6 +1114,7 @@ class invoice_creation:
 
 
 def main():
+    """Function Runs the program"""
     Login(root)
     root.mainloop()
 
