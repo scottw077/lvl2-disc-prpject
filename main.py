@@ -1,12 +1,13 @@
-from tkinter import *
-from tkinter import messagebox, ttk, filedialog
+"""This progam provides features that help electrians manage their jobs and to create invoices"""
+from tkinter import messagebox, ttk, filedialog, Tk, Entry, Label, Button
+from tkinter import Frame, CENTER, LabelFrame, StringVar, OptionMenu, NO, IntVar, Radiobutton
 import json
 import datetime
 import hashlib
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
+from reportlab.lib import colorsInvoiceCreation
 from reportlab.lib.units import inch
 root = Tk()
 root.title("Electrical Job Management Software")
@@ -16,12 +17,14 @@ root.configure(bg="#5b5b5c")
 root.columnconfigure(3, weight=1)
 
 
-class signup:
+class SignUp:
+    """This GUI creates an account for the user"""
+
     def __init__(self, master):
         self.root = master
-        self.signuptxt = Label(root, text="Sign Up", font=(
+        self.sign_up_txt = Label(root, text="Sign Up", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
-        self.signuptxt.grid(row=0, column=3)
+        self.sign_up_txt.grid(row=0, column=3)
 
         self.usernametxt = Label(root, text="Create a Username", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
@@ -52,9 +55,9 @@ class signup:
         self.spacer3.grid(row=9, column=3)
 
         self.sign_upbutton = Button(root, text="Sign Up", padx=30,
-                                    pady=10, font=("Arial 12 bold"), 
+                                    pady=10, font=("Arial 12 bold"),
                                     borderwidth=6, command=lambda: signup_process
-                                    (self.username_entry.get(), self.password.get(), 
+                                    (self.username_entry.get(), self.password.get(),
                                      self.confirmpassword.get()))
         self.sign_upbutton.grid(row=10, column=3)
 
@@ -101,7 +104,7 @@ class signup:
                 with open("usernames.json", "w", encoding="UTF-8") as j:
                     json.dump(userpass, j)
                 messagebox.showinfo("Success!", "Sucessfully Signed Up")
-                self.signuptxt.destroy()
+                self.sign_up_txt.destroy()
                 self.usernametxt.destroy()
                 self.username_entry.destroy()
                 self.spacer1.destroy()
@@ -116,7 +119,8 @@ class signup:
                 Login(root)
 
     def login_pass_through(self):
-        self.signuptxt.destroy()
+        """Sends the user from the Sign Up page to the Login page"""
+        self.sign_up_txt.destroy()
         self.usernametxt.destroy()
         self.username_entry.destroy()
         self.spacer1.destroy()
@@ -132,6 +136,8 @@ class signup:
 
 
 class Login:
+    """Logins the user into their account"""
+
     def __init__(self, master):
         self.root = master
         self.logintxt = Label(root, text="Login", font=(
@@ -157,7 +163,7 @@ class Login:
         self.spacer2.grid(row=6, column=3)
 
         self.login_button = Button(root, text="Login", padx=30,
-                                   pady=10, font=("Arial 12 bold"), borderwidth=6,  
+                                   pady=10, font=("Arial 12 bold"), borderwidth=6,
                                    command=lambda: login_process
                                    (self.user_entry.get(), self.pwd_entry.get()))
         self.login_button.grid(row=8, column=3)
@@ -206,6 +212,7 @@ class Login:
                     "An error occured", "Username or Password is incorrect, please try again")
 
     def sign_up_pass_through(self):
+        """Sends the user to the Sign Up page from the Login Page"""
         self.logintxt.destroy()
         self.usertxt.destroy()
         self.user_entry.destroy()
@@ -215,10 +222,12 @@ class Login:
         self.spacer2.destroy()
         self.login_button.destroy()
         self.sign_up_pass_btn.destroy()
-        signup(root)
+        SignUp(root)
 
 
 class MainMenu:
+    """This is the Main Menu of the GUI"""
+
     def __init__(self, master, username):
         self.root = master
         self.username = username
@@ -230,8 +239,9 @@ class MainMenu:
             "Arial 14 bold"), borderwidth=6, command=self.staff_tracker)
         self.staff_tracker_btn.place(x=20, y=22)
 
-        self.create_invoice_btn = Button(root, text="Create Invoice or Quote", padx=30, pady=10, font=(
-            "Arial 14 bold"), borderwidth=6, command=self.create_invoice)
+        self.create_invoice_btn = Button(root, text="Create Invoice or Quote",
+                                         padx=30, pady=10, font=("Arial 14 bold")
+                                         , borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
 
         self.jobs_frame = Frame(root)
@@ -284,50 +294,58 @@ class MainMenu:
         self.jobs.grid(row=1, column=3)
 
     def add_job(self):
-        with open("staff.json", encoding="UTF-8") as d:
-            all_staff = json.load(d)
+        """Sends the user from Main Menu to Add Job and checks if the user can create a job"""
+
+        with open("staff.json", encoding="UTF-8") as filed_staff:
+            all_staff = json.load(filed_staff)
             staff = []
             for indiv_staff in all_staff:
                 if indiv_staff[0] == self.username:
                     staff.append(indiv_staff[1])
         if len(staff) == 0:
-            messagebox.showinfo("No staff found!", "You must have staff before you create a " 
+            messagebox.showinfo("No staff found!", "You must have staff before you create a "
                                 "job! Please navigate to 'Staff Tracker' to create new staff")
         else:
             self.add_job_btn.destroy()
             self.staff_tracker_btn.destroy()
             self.create_invoice_btn.destroy()
             self.jobs_frame.destroy()
-            add_job(root, self.username)
+            AddJob(root, self.username)
 
     def staff_tracker(self):
+        """Sends the user from the Main Menu to the Staff Tracker"""
         self.add_job_btn.destroy()
         self.staff_tracker_btn.destroy()
         self.create_invoice_btn.destroy()
         self.jobs_frame.destroy()
-        staff_tracker(root, self.username)
+        StaffTracker(root, self.username)
 
     def create_invoice(self):
-        with open("jobs.json", "r", encoding="UTF-8") as d:
-            all_jobs = json.load(d)
+        """Sends the user from the Main Menu to 
+        Create Invoice and checks if they can create an invoice"""
+
+        with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
+            all_jobs = json.load(json_jobs)
             users_jobs = []
             for job in all_jobs:
                 if job[0] == self.username:
                     users_jobs.append(job[1:])
-        
+
         if len(users_jobs) == 0:
             messagebox.showinfo("No jobs found!", 'You must have jobs before '
                                 'you create an invoice, please naviagate to "Add Job"' )
-        
+
         else:
             self.add_job_btn.destroy()
             self.staff_tracker_btn.destroy()
             self.create_invoice_btn.destroy()
             self.jobs_frame.destroy()
-            invoice_creation(root, self.username)
+            InvoiceCreation(root, self.username)
 
 
-class add_job:
+class AddJob:
+    """Creates a new job for the user"""
+
     def __init__(self, master, username):
         self.root = master
         self.username = username
@@ -378,9 +396,9 @@ class add_job:
         spacer4 = Label(frame, text="", bg="#5b5b5c")
         spacer4.grid(row=13, column=3)
 
-        next_btn = Button(frame, text="Next", padx=30, pady=10, 
+        next_btn = Button(frame, text="Next", padx=30, pady=10,
                           font=("Arial 12 bold"), command=lambda: add_job2(
-                          name_entry.get(), email_entry.get(), 
+                          name_entry.get(), email_entry.get(),
                           phnenum_entry.get(), address_entry.get(), frame))
         next_btn.grid(row=14, column=3)
 
@@ -399,11 +417,13 @@ class add_job:
 
             elif phnenum == "":
                 messagebox.showinfo(
-                    "Entry Box Empty!", "Empty Client's Phone Number Box! Please enter the client's phone number")
+                    "Entry Box Empty!", "Empty Client's Phone "
+                    "Number Box! Please enter the client's phone number")
 
             elif address == "":
                 messagebox.showinfo(
-                    "Entry Box Empty!", "Empty Client's Address Box! Please enter the client's address")
+                    "Entry Box Empty!", "Empty Client's "
+                    "Address Box! Please enter the client's address")
 
             else:
                 frame.grid_forget()
@@ -451,11 +471,11 @@ class add_job:
                 staff_txt.grid(row=8, column=3)
                 staff_default = StringVar()
                 staff_default.set("Select Staff")
-                with open("staff.json", encoding="UTF-8") as d:
-                    all_staff = json.load(d)
+                with open("staff.json", encoding="UTF-8") as json_staff:
+                    all_staff = json.load(json_staff)
 
-                staff = []
-
+                staff = ["temp"]
+                staff.pop(0)
                 for indiv_staff in all_staff:
                     if indiv_staff[0] == username:
                         staff.append(indiv_staff[1])
@@ -466,14 +486,14 @@ class add_job:
                 spacer3 = Label(frame1, text="", bg="#5b5b5c")
                 spacer3.grid(row=10, column=3)
 
-                add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10, 
+                add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10,
                     font=("Arial 12 bold"), command=lambda: add_job_process(
-                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(), 
+                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(),
                     staff_default.get(), frame1, main_menu_return1))
-                
+
                 add_job_btn.grid(row=11, column=3)
 
-        def add_job_process(name, email, phnenum, address, job_type, 
+        def add_job_process(name, email, phnenum, address, job_type,
                             job_status, staff, frame, return_button):
             with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
                 existing_jobs = json.load(json_jobs)
@@ -500,10 +520,28 @@ class add_job:
             MainMenu(root, self.username)
 
 
-class staff_tracker:
+class StaffTracker:
+    """Tracks the individual staff's job's"""
+
     def __init__(self, master, username):
         self.username = username
         self.root = master
+        self.staff_tracker = Button(root, text="Return to Staff Tracker", padx=2, pady=2, font=(
+            "Arial 8 bold"), command=self.destroy_new_staff)
+        self.next_btn = Button(root, text="Add Staff", padx=30,
+                               pady=10, font=("Arial 12 bold"),
+                               borderwidth=6,  command=self.new_staff)
+        self.spacer1 = Label(root, text="", bg="#5b5b5c")
+        self.spacer2 = Label(root, text="", bg="#5b5b5c")
+        self.spacer3 = Label(root, text="", bg="#5b5b5c")
+        self.spacer4 = Label(root, text="", bg="#5b5b5c")
+        self.spacer5 = Label(root, text="", bg="#5b5b5c")
+        self.new_staff_entry = Entry(root, width=20, justify="center")
+        self.stafftxt = Label(root, text="New Staff Name:", font=(
+            "Arial 12 bold"), fg="white", bg="#5b5b5c")
+        self.addstafftxt = Label(root, text="Add Staff", font=(
+            "Impact 60"), fg="white", bg="#5b5b5c")
+
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_btn)
         self.main_menu_return.place(x=665, y=15)
@@ -525,24 +563,24 @@ class staff_tracker:
         for job in all_jobs:
             if job[0] == self.username:
                 jobs.append(job[1:])
-    
+
         staff = []
 
-        with open("staff.json", encoding="UTF-8") as g:
-            all_staff = json.load(g)
-        
+        with open("staff.json", encoding="UTF-8") as staff_json:
+            all_staff = json.load(staff_json)
+
         for staff_item in all_staff:
             if staff_item[0] == username:
                 staff.append(staff_item[1])
 
         height_num = 0
-        
+
         for each_job in jobs:
             if each_job[7] in staff:
                 height_num += 1
 
         self.staff_table = ttk.Treeview(self.staff_frame, height=height_num)
-        
+
         self.staff_table['columns'] = ("staff",'job_num', 'name',
                                 'email', 'phe_num', 'address', "job_type", "job_status")
 
@@ -555,7 +593,7 @@ class staff_tracker:
         self.staff_table.column("address", anchor=CENTER, width=100)
         self.staff_table.column("job_type", anchor=CENTER, width=83)
         self.staff_table.column("job_status", anchor=CENTER, width=110)
-        
+
         self.staff_table.heading("#0", text="", anchor=CENTER)
         self.staff_table.heading("staff", text="Staff:")
         self.staff_table.heading("job_num", text="Job #",
@@ -572,63 +610,44 @@ class staff_tracker:
                           anchor=CENTER)
         self.staff_table.heading("job_status", text="Job Status",
                           anchor=CENTER)
-        
+
         for all_job in jobs:
             if all_job[7] in staff:
                 self.staff_table.insert(parent='', index='end', text='',
-                                        values=(all_job[7], all_job[0], all_job[1], 
-                                                all_job[2], all_job[3], all_job[4], 
+                                        values=(all_job[7], all_job[0], all_job[1],
+                                                all_job[2], all_job[3], all_job[4],
                                                 all_job[5], all_job[6]))
-                 
+
         self.staff_vsb = ttk.Scrollbar(root, orient="vertical", command=self.staff_table.yview)
         self.staff_table.configure(yscrollcommand=self.staff_vsb.set)
         self.staff_vsb.place(x=764, y=80)
         self.staff_table.grid(row=1, column=3)
-    
-    
+
+
     def add_staff(self):
+        """Sends the user to the Add Staff GUI"""
         self.addstaff.destroy()
         self.main_menu_return.destroy()
         self.staff_table.destroy()
         self.staff_frame.destroy()
         self.staff_vsb.destroy()
-        self.addstafftxt = Label(root, text="Add Staff", font=(
-            "Impact 60"), fg="white", bg="#5b5b5c")
         self.addstafftxt.grid(row=0, column=3)
-
-        self.spacer1 = Label(root, text="", bg="#5b5b5c")
         self.spacer1.grid(row=2, column=3)
-
-        self.spacer2 = Label(root, text="", bg="#5b5b5c")
         self.spacer2.grid(row=3, column=3)
-
-        self.stafftxt = Label(root, text="New Staff Name:", font=(
-            "Arial 12 bold"), fg="white", bg="#5b5b5c")
         self.stafftxt.grid(row=4, column=3)
-        self.new_staff_entry = Entry(root, width=20, justify="center")
         self.new_staff_entry.grid(row=5, column=3)
-
-        self.spacer3 = Label(root, text="", bg="#5b5b5c")
         self.spacer3.grid(row=6, column=3)
-
-        self.spacer4 = Label(root, text="", bg="#5b5b5c")
         self.spacer4.grid(row=7, column=3)
-
-        self.spacer5 = Label(root, text="", bg="#5b5b5c")
         self.spacer5.grid(row=8, column=3)
-
-        self.next_btn = Button(root, text="Add Staff", padx=30,
-                               pady=10, font=("Arial 12 bold"), borderwidth=6,  command=self.new_staff)
         self.next_btn.grid(row=9, column=3)
-        self.staff_tracker = Button(root, text="Return to Staff Tracker", padx=2, pady=2, font=(
-            "Arial 8 bold"), command=self.destroy_new_staff)
         self.staff_tracker.place(x=658, y=15)
-    
-    
+
+
     def new_staff(self):
+        """Adds the new staff to the file and error checks"""
         staff = self.new_staff_entry.get()
-        with open("staff.json", "r", encoding="UTF-8") as d:
-            current_staff = json.load(d)
+        with open("staff.json", "r", encoding="UTF-8") as staff_file:
+            current_staff = json.load(staff_file)
 
         for name in current_staff:
             if name[0] == self.username:
@@ -643,14 +662,15 @@ class staff_tracker:
         else:
             new_staff = [self.username, staff]
             current_staff.append(new_staff)
-            with open("staff.json", "w", encoding="UTF-8") as c:
-                json.dump(current_staff, c)
+            with open("staff.json", "w", encoding="UTF-8") as file_staff:
+                json.dump(current_staff, file_staff)
             messagebox.showinfo(
-                "Success!", "Successfully added {}!".format(staff))
+                "Success!", f"Successfully added {staff}!")
             self.destroy_new_staff()
-    
-    
-    def destroy_new_staff(self):    
+
+
+    def destroy_new_staff(self):
+        """Sends the user back to the staff tracker"""
         self.addstafftxt.destroy()
         self.spacer1.destroy()
         self.spacer2.destroy()
@@ -661,9 +681,10 @@ class staff_tracker:
         self.spacer5.destroy()
         self.next_btn.destroy()
         self.staff_tracker.destroy()
-        staff_tracker(root, self.username)
+        StaffTracker(root, self.username)
 
     def main_menu_btn(self):
+        """Sends the user back to the Main Menu"""
         self.addstaff.destroy()
         self.main_menu_return.destroy()
         self.staff_table.destroy()
@@ -672,15 +693,21 @@ class staff_tracker:
         MainMenu(root, self.username)
 
 
-class invoice_creation:
+class InvoiceCreation:
+    """Displays the invoice creation GUI and creates the invoice"""
+
     def __init__(self, master, username):
         self.username = username
         self.root = master
+        self.errorchecknum = 0
+        self.invoicelinecheck = 0
+        self.maxlineerror = Label(root, text="Max number of lines reached", font=(
+                "Arial 12 bold"), fg="red", bg="#5b5b5c")
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_return_passthrough)
         self.main_menu_return.place(x=665, y=15)
-        with open("jobs.json", "r", encoding="UTF-8") as d:
-            all_jobs = json.load(d)
+        with open("jobs.json", "r", encoding="UTF-8") as file_jobs:
+            all_jobs = json.load(file_jobs)
             users_jobs = []
             display_jobs = []
             for job in all_jobs:
@@ -694,15 +721,16 @@ class invoice_creation:
         self.select_job = StringVar()
         self.select_job.set("Select Job to create invoice for:")
 
-        test_str = ""
-        display_jobs2 = []
+        job_str = ""
+        display_jobs2 = ["temp"]
+        display_jobs2.pop(0)
         for job in display_jobs:
             for item in job:
-                test = str(item)
-                test_str += (" : " + test)
-            list_job = test_str[2:]
+                str_job = str(item)
+                job_str += (" : " + str_job)
+            list_job = job_str[2:]
             display_jobs2.append(list_job)
-            test_str = ""
+            job_str = ""
 
         self.jobs_entry = OptionMenu(root, self.select_job,
                                      *display_jobs2)
@@ -711,8 +739,8 @@ class invoice_creation:
         self.spacer2 = Label(root, text="", bg="#5b5b5c")
         self.spacer2.grid(row=4, column=3)
 
-        self.r = IntVar()
-        self.r.set("3")
+        self.gst_num = IntVar()
+        self.gst_num.set("3")
 
         self.gstdroppeddown = False
 
@@ -721,9 +749,11 @@ class invoice_creation:
         self.gsttxt.grid(row=1, column=3)
 
         self.gstbutton1 = Radiobutton(
-            root, text="Yes", variable=self.r, value=1, bg="#5b5b5c", command=self.gst_dropdown)
+            root, text="Yes", variable=self.gst_num, value=1,
+            bg="#5b5b5c", command=self.gst_dropdown)
         self.gstbutton2 = Radiobutton(
-            root, text="No", variable=self.r, value=2, bg="#5b5b5c", command=self.destroy_gstdropdown)
+            root, text="No", variable=self.gst_num, value=2,
+            bg="#5b5b5c", command=self.destroy_gstdropdown)
         self.gstbutton1.grid(row=2, column=3)
         self.gstbutton2.grid(row=3, column=3)
 
@@ -771,7 +801,8 @@ class invoice_creation:
         self.removeline.place(x=600, y=200)
 
         self.createinvoice_button = Button(root, text="Create Invoice", padx=30,
-                                           pady=10, font="Arial 12 bold", borderwidth=6, command=self.invoice_create)
+                                           pady=10, font="Arial 12 bold",
+                                           borderwidth=6, command=self.invoice_create)
         self.createinvoice_button.place(x=310, y=380)
 
         self.gstinclexcl = StringVar()
@@ -781,15 +812,19 @@ class invoice_creation:
             root, self.gstinclexcl, *gstoptions)
 
     def gst_dropdown(self):
-        self.gstdroppeddown == True
+        """Displays the GST included/excluded menu"""
+        self.gstdroppeddown = True
         self.gstdrowndown_menu.place(x=8, y=150)
 
     def destroy_gstdropdown(self):
-        if self.gstdroppeddown == True:
+        """Destroys the GST included/excluded dropdown 
+        menu if the user selects Yes, then switches to NO"""
+        if self.gstdroppeddown is True:
             self.gstdrowndown_menu.place_forget()
             self.gstdroppeddown = False
 
     def newline(self):
+        """Displays a new line in the GUI"""
         if self.num == 0:
             self.descentrybox1.place(x=8, y=290)
             self.quantityentrybox1.place(x=550, y=290)
@@ -810,11 +845,10 @@ class invoice_creation:
 
         elif self.num == 3:
             self.num += 1
-            self.maxlineerror = Label(root, text="Max number of lines reached", font=(
-                "Arial 12 bold"), fg="red", bg="#5b5b5c")
             self.maxlineerror.place(x=8, y=420)
 
     def remove_line(self):
+        """Removes the line in the GUI"""
         if self.num == 1:
             self.descentrybox1.place_forget()
             self.quantityentrybox1.place_forget()
@@ -842,6 +876,7 @@ class invoice_creation:
             self.maxlineerror.place_forget()
 
     def invoice_create(self):
+        """Starts the invoice creation process"""
         self.errorchecknum = 0
         self.invoicelinecheck = 0
         self.invoice_create_error_check(self.descentrybox.get(
@@ -854,18 +889,20 @@ class invoice_creation:
         ), self.quantityentrybox3.get(), self.priceentrybox3.get())
         if str(self.select_job.get()) == "Select Job to create invoice for:":
             messagebox.showerror(
-                "An error occured", "Please select a job to create the invoice for. If there is no job, please create one")
+                "An error occured", "Please select a job to create the "
+                "invoice for. If there is no job, please create one")
             self.errorchecknum += 1
 
-        if self.r.get() == 3:
+        if self.gst_num.get() == 3:
             messagebox.showerror(
                 "An error occured", "Please select whether you charge GST or do not")
             self.errorchecknum += 1
 
-        if self.gstdroppeddown == True:
+        if self.gstdroppeddown is True:
             if str(self.gstinclexcl.get()) == "Is GST Included or Excluded":
                 messagebox.showerror(
-                    "An error occured", "Please select whether GST is included in the price or excluded")
+                    "An error occured", "Please select whether GST "
+                    "is included in the price or excluded")
                 self.errorchecknum += 1
 
         if self.invoicelinecheck == 4:
@@ -874,14 +911,18 @@ class invoice_creation:
 
         if self.errorchecknum == 0:
             lines = []
-            self.line_check(self.descentrybox.get(), self.quantityentrybox.get(), self.priceentrybox.get(), lines)
-            self.line_check(self.descentrybox1.get(), self.quantityentrybox1.get(), self.priceentrybox1.get(), lines)
-            self.line_check(self.descentrybox2.get(), self.quantityentrybox2.get(), self.priceentrybox2.get(), lines)
-            self.line_check(self.descentrybox3.get(), self.quantityentrybox3.get(), self.priceentrybox3.get(), lines)
+            self.line_check(self.descentrybox.get(), self.quantityentrybox.get(),
+                            self.priceentrybox.get(), lines)
+            self.line_check(self.descentrybox1.get(), self.quantityentrybox1.get(),
+                             self.priceentrybox1.get(), lines)
+            self.line_check(self.descentrybox2.get(), self.quantityentrybox2.get(),
+                            self.priceentrybox2.get(), lines)
+            self.line_check(self.descentrybox3.get(), self.quantityentrybox3.get(),
+                            self.priceentrybox3.get(), lines)
 
-            
-            with open("jobs.json", "r", encoding="UTF-8") as l:
-                all_jobs = json.load(l)
+
+            with open("jobs.json", "r", encoding="UTF-8") as jobs_filed:
+                all_jobs = json.load(jobs_filed)
                 for job in all_jobs:
                     if job[0] == self.username:
                         if int(job[1]) == int(self.select_job.get()[1]):
@@ -889,51 +930,51 @@ class invoice_creation:
                             address = job[5]
                             phone_number = job[4]
                             email = job[3]
-            
+
             current_datetime = datetime.datetime.now()
 
             formatted_date = current_datetime.strftime("%d / %m / %Y")
-            
+
             subtotal = sum(line["quantity"] * line["unit_price"] for line in lines)
 
             gst = sum(line["GST"] for line in lines)
 
             total = sum(line["total"] for line in lines)
-            
-            pdf_file = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")], initialfile = f"invoice{self.select_job.get()[1]}")
+
+            pdf_file = filedialog.asksaveasfilename(defaultextension=".pdf",
+                                                    filetypes=[("PDF files", "*.pdf")],
+                                                    initialfile =
+                                                    f"invoice{self.select_job.get()[1]}")
 
             doc = SimpleDocTemplate(pdf_file, pagesize=letter)
 
             pdftext = []
-            
+
             styles = getSampleStyleSheet()
 
             header = Paragraph("Invoice", styles['Heading1'])
             pdftext.append(header)
             right_align = styles['Heading5']
             right_align.alignment = 2
-            datetext = Paragraph("Date: {}".format(formatted_date), right_align)
+            datetext = Paragraph(f"Date: {formatted_date}", right_align)
             pdftext.append(datetext)
-            pdftext.append(
-                Paragraph("Job Number: {}".format(int(self.select_job.get()[1])), right_align))
+            pdftext.append(Paragraph(f"Job Number: {int(self.select_job.get()[1])}", right_align))
             pdftext.append(Paragraph("Invoice Billed to:", styles['Heading4']))
-            pdftext.append(
-                Paragraph("Name: {}".format(name), styles['Normal']))
-            pdftext.append(Paragraph("Address: {}".format(
-                address), styles['Normal']))
-            pdftext.append(Paragraph("Phone: {}".format(
-                phone_number), styles['Normal']))
-            pdftext.append(Paragraph("Email: {}".format(
-                email)), styles['Normal'])
+            pdftext.append(Paragraph(f"Name: {name}", styles['Normal']))
+            pdftext.append(Paragraph(f"Address: {address}", styles['Normal']))
+            pdftext.append(Paragraph(f"Phone: {phone_number}", styles['Normal']))
+            pdftext.append(Paragraph(f"Email: {email}", styles['Normal']))
+
 
             # Itemized list
             spacer = Spacer(1, 40)
             pdftext.append(spacer)
-            
+
             data = [["Description", "Quantity", "Unit Price", "GST", "Total"]]
             for line in lines:
-                data.append([line["description"], line["quantity"],
-                            '${:.2f}'.format(line["unit_price"]), '${:.2f}'.format(line["GST"]), '${:.2f}'.format(line["total"])])
+                data.append([line["description"], line["quantity"], f'${line["unit_price"]:.2f}',
+                             f'${line["GST"]:.2f}', f'${line["total"]:.2f}'])
+
 
             # Create a table for the itemized list
             table = Table(data, colWidths=[4*inch, 1 *
@@ -952,32 +993,32 @@ class invoice_creation:
 
             # Subtotal and Total
             pdftext.append(spacer)
-            
-            pdftext.append(
-                Paragraph("Subtotal: ${:.2f}".format(subtotal), styles['Heading4']))
-            pdftext.append(Paragraph("GST: ${:.2f}".format(gst), styles['Heading4']))
 
             pdftext.append(
-                Paragraph("Total: ${:.2f}".format(total), styles['Heading2']))
+                Paragraph(f"Subtotal: ${subtotal:.2f}", styles['Heading4']))
+            pdftext.append(Paragraph(f"GST: ${gst:.2f}", styles['Heading4']))
+
+            pdftext.append(Paragraph(f"Total: ${total:.2f}", styles['Heading2']))
+
 
             # Build the PDF
             if pdf_file:
                 doc.build(pdftext)
-                with open("jobs.json", "r", encoding="UTF-8") as l:
-                    all_jobs = json.load(l)
+                with open("jobs.json", "r", encoding="UTF-8") as filed_jobs:
+                    all_jobs = json.load(filed_jobs)
                     for job in all_jobs:
                         if job[0] == self.username:
                             if int(job[1]) == int(self.select_job.get()[1]):
                                 test123 = all_jobs.index(job)
                                 all_jobs.pop(test123)
 
-                with open("jobs.json", "w", encoding="UTF-8") as p:
-                    json.dump(all_jobs, p)
-                
+                with open("jobs.json", "w", encoding="UTF-8") as job_file:
+                    json.dump(all_jobs, job_file)
+
                 self.main_menu_return_passthrough()
 
     def invoice_create_error_check(self, desc, quantity, price):
-
+        """Checks for errors in the invoices creation"""
         if (desc or quantity or price) and not (desc and quantity and price):
             messagebox.showerror(
                 "An error occured", f"Please input all 3 inputs (Description, quantity, "
@@ -997,7 +1038,8 @@ class invoice_creation:
 
             except ValueError:
                 messagebox.showerror(
-                    "An error occured", "Please make sure that the quantity is a number and contains no other characters")
+                    "An error occured", "Please make sure that "
+                    "the quantity is a number and contains no other characters")
                 self.errorchecknum += 1
 
         if price == "":
@@ -1027,7 +1069,8 @@ class invoice_creation:
 
             except ValueError:
                 messagebox.showerror(
-                    "An error occured", "Please make sure that the price is a number and contains no other characters other than $ sym")
+                    "An error occured", "Please make sure that the " 
+                    "price is a number and contains no other characters other than $ sym")
                 self.errorchecknum += 1
 
         if len(desc) > 200:
@@ -1048,9 +1091,9 @@ class invoice_creation:
                 "Price, please shorten it to 12 or under")
             self.errorchecknum += 1
 
-     
+
     def line_check(self, desc, quantity, price, lines):
-        """"""
+        """Checks the lines of the invoice to make the numbers right"""
         if desc == "":
             pass
         else:
@@ -1059,10 +1102,10 @@ class invoice_creation:
             total1 = fquantity * fprice
 
             gst = 0
-            if self.r.get() == 1:
+            if self.gst_num.get() == 1:
                 if self.gstinclexcl.get() == "GST Excluded":
                     gst = total1 * .15
-                    total = total1 + gst             
+                    total = total1 + gst
                 else:
                     gst = total1 - (total1/1.15)
                     total = total1
