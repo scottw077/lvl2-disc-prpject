@@ -1,4 +1,5 @@
 """This progam provides features that help electrians manage their jobs and to create invoices"""
+#Importing everything needed to run the program
 from tkinter import messagebox, ttk, filedialog, Tk, Entry, Label, Button
 from tkinter import Frame, CENTER, LabelFrame, StringVar, OptionMenu, NO, IntVar, Radiobutton
 import json
@@ -7,8 +8,9 @@ import hashlib
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colorsInvoiceCreation
+from reportlab.lib import colors
 from reportlab.lib.units import inch
+#Configuring the GUI
 root = Tk()
 root.title("Electrical Job Management Software")
 root.iconbitmap("ElecTRICIAN JOB MANAGEMENT SOFTWARE (2).ico")
@@ -22,13 +24,14 @@ class SignUp:
 
     def __init__(self, master):
         self.root = master
+        #Creates the GUI
         self.sign_up_txt = Label(root, text="Sign Up", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
         self.sign_up_txt.grid(row=0, column=3)
 
-        self.usernametxt = Label(root, text="Create a Username", font=(
+        self.username_txt = Label(root, text="Create a Username", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.usernametxt.grid(row=1, column=3)
+        self.username_txt.grid(row=1, column=3)
         self.username_entry = Entry(root, width=20, justify="center")
         self.username_entry.grid(row=2, column=3)
 
@@ -44,22 +47,22 @@ class SignUp:
         self.spacer2 = Label(root, text="", bg="#5b5b5c")
         self.spacer2.grid(row=6, column=3)
 
-        self.confirmpwdtxt = Label(root, text="Confirm Password", font=(
+        self.confirm_pwd_txt = Label(root, text="Confirm Password", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.confirmpwdtxt.grid(row=7, column=3)
-        self.confirmpassword = Entry(
+        self.confirm_pwd_txt.grid(row=7, column=3)
+        self.confirm_password = Entry(
             root, width=20, justify="center", show="*")
-        self.confirmpassword.grid(row=8, column=3)
+        self.confirm_password.grid(row=8, column=3)
 
         self.spacer3 = Label(root, text="", bg="#5b5b5c")
         self.spacer3.grid(row=9, column=3)
 
-        self.sign_upbutton = Button(root, text="Sign Up", padx=30,
+        self.sign_up_button = Button(root, text="Sign Up", padx=30,
                                     pady=10, font=("Arial 12 bold"),
                                     borderwidth=6, command=lambda: signup_process
                                     (self.username_entry.get(), self.password.get(),
-                                     self.confirmpassword.get()))
-        self.sign_upbutton.grid(row=10, column=3)
+                                     self.confirm_password.get()))
+        self.sign_up_button.grid(row=10, column=3)
 
         self.spacer3 = Label(root, text="", bg="#5b5b5c")
         self.spacer3.grid(row=11, column=3)
@@ -69,11 +72,11 @@ class SignUp:
             bg="#5b5b5c", fg="#0381ff", bd=0, command=self.login_pass_through)
         self.login_pass_through_btn.grid(row=12, column=3)
 
-        def signup_process(username, pwd, confirmpwd):
-
+        #Checks for errors if none, creates the account for the user
+        def signup_process(username, pwd, confirm_pwd):
             with open("usernames.json", encoding="UTF-8") as json_usernames:
-                userpass = json.load(json_usernames)
-                users = [user[0]for user in userpass]
+                user_pass = json.load(json_usernames)
+                users = [user[0]for user in user_pass]
             if " " in username:
                 messagebox.showerror(
                     "An error occured", "Error, cannot have spaces in username")
@@ -88,7 +91,7 @@ class SignUp:
             elif "" == pwd:
                 messagebox.showinfo("Entry Box Empty!", "Empty Password box!")
 
-            elif pwd != confirmpwd:
+            elif pwd != confirm_pwd:
                 messagebox.showerror("An error occured",
                                      "Error, Passwords must match!")
 
@@ -96,41 +99,43 @@ class SignUp:
                 messagebox.showinfo("Username already Taken!", "The username you have "
                                     "inputed is already taken! Please choose a different username")
             else:
+                #Hashs the password
                 encoded_pwd = pwd.encode("utf-8")
                 hashed_pwd = hashlib.sha256(encoded_pwd).hexdigest()
                 new_user = [username, str(hashed_pwd)]
-                userpass.append(new_user)
+                user_pass.append(new_user)
 
+                #Writes the new user's username and password to the usernames json
                 with open("usernames.json", "w", encoding="UTF-8") as j:
-                    json.dump(userpass, j)
+                    json.dump(user_pass, j)
                 messagebox.showinfo("Success!", "Sucessfully Signed Up")
                 self.sign_up_txt.destroy()
-                self.usernametxt.destroy()
+                self.username_txt.destroy()
                 self.username_entry.destroy()
                 self.spacer1.destroy()
                 self.pwd_txt.destroy()
                 self.password.destroy()
                 self.spacer2.destroy()
-                self.confirmpwdtxt.destroy()
-                self.confirmpassword.destroy()
+                self.confirm_pwd_txt.destroy()
+                self.confirm_password.destroy()
                 self.spacer3.destroy()
-                self.sign_upbutton.destroy()
+                self.sign_up_button.destroy()
                 self.login_pass_through_btn.destroy()
                 Login(root)
 
     def login_pass_through(self):
         """Sends the user from the Sign Up page to the Login page"""
         self.sign_up_txt.destroy()
-        self.usernametxt.destroy()
+        self.username_txt.destroy()
         self.username_entry.destroy()
         self.spacer1.destroy()
         self.pwd_txt.destroy()
         self.password.destroy()
         self.spacer2.destroy()
-        self.confirmpwdtxt.destroy()
-        self.confirmpassword.destroy()
+        self.confirm_pwd_txt.destroy()
+        self.confirm_password.destroy()
         self.spacer3.destroy()
-        self.sign_upbutton.destroy()
+        self.sign_up_button.destroy()
         self.login_pass_through_btn.destroy()
         Login(root)
 
@@ -140,22 +145,23 @@ class Login:
 
     def __init__(self, master):
         self.root = master
-        self.logintxt = Label(root, text="Login", font=(
+        #Creates the GUI
+        self.login_txt = Label(root, text="Login", font=(
             "Impact 80"), fg="white", bg="#5b5b5c")
-        self.logintxt.grid(row=0, column=3)
+        self.login_txt.grid(row=0, column=3)
 
-        self.usertxt = Label(root, text="Username:", font=(
+        self.user_txt = Label(root, text="Username:", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.usertxt.grid(row=1, column=3)
+        self.user_txt.grid(row=1, column=3)
         self.user_entry = Entry(root, width=20, justify="center")
         self.user_entry.grid(row=2, column=3)
 
         self.spacer1 = Label(root, text="", bg="#5b5b5c")
         self.spacer1.grid(row=3, column=3)
 
-        self.pwdtxt = Label(root, text="Password:", font=(
+        self.pwd_txt = Label(root, text="Password:", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.pwdtxt.grid(row=4, column=3)
+        self.pwd_txt.grid(row=4, column=3)
         self.pwd_entry = Entry(root, width=20, justify="center", show="*")
         self.pwd_entry.grid(row=5, column=3)
 
@@ -177,9 +183,10 @@ class Login:
         self.sign_up_pass_btn.grid(row=10, column=3)
 
         def login_process(username, password):
+            #Opens the usernames json and loads it to a variable
             with open("usernames.json", encoding="UTF-8") as username_json:
-                userpass = json.load(username_json)
-                users = [user[0]for user in userpass]
+                user_pass = json.load(username_json)
+                users = [user[0]for user in user_pass]
 
             if "" == username:
                 messagebox.showinfo("Entry Box Empty!", "Empty Username box!")
@@ -188,16 +195,17 @@ class Login:
                 messagebox.showinfo("Entry Box Empty!", "Empty Password box!")
 
             elif username in users:
+                #Checks if the password entered matches the username's password
                 position = users.index(username)
                 passw = str(password).encode("utf-8")
                 entry_hashed_pw = hashlib.sha256(passw).hexdigest()
 
-                if entry_hashed_pw == userpass[position][1]:
-                    self.logintxt.destroy()
-                    self.usertxt.destroy()
+                if entry_hashed_pw == user_pass[position][1]:
+                    self.login_txt.destroy()
+                    self.user_txt.destroy()
                     self.user_entry.destroy()
                     self.spacer1.destroy()
-                    self.pwdtxt.destroy()
+                    self.pwd_txt.destroy()
                     self.pwd_entry.destroy()
                     self.spacer2.destroy()
                     self.login_button.destroy()
@@ -213,11 +221,11 @@ class Login:
 
     def sign_up_pass_through(self):
         """Sends the user to the Sign Up page from the Login Page"""
-        self.logintxt.destroy()
-        self.usertxt.destroy()
+        self.login_txt.destroy()
+        self.user_txt.destroy()
         self.user_entry.destroy()
         self.spacer1.destroy()
-        self.pwdtxt.destroy()
+        self.pwd_txt.destroy()
         self.pwd_entry.destroy()
         self.spacer2.destroy()
         self.login_button.destroy()
@@ -231,6 +239,7 @@ class MainMenu:
     def __init__(self, master, username):
         self.root = master
         self.username = username
+        #Creating the GUI
         self.add_job_btn = Button(root, text="Add Job", padx=30, pady=10, font=(
             "Arial 14 bold"), borderwidth=6, command=self.add_job)
         self.add_job_btn.place(x=275, y=22)
@@ -244,6 +253,7 @@ class MainMenu:
                                          , borderwidth=6, command=self.create_invoice)
         self.create_invoice_btn.place(x=480, y=22)
 
+        #Making the jobs table
         self.jobs_frame = Frame(root)
         self.jobs_frame.place(x=20, y=106)
 
@@ -296,6 +306,7 @@ class MainMenu:
     def add_job(self):
         """Sends the user from Main Menu to Add Job and checks if the user can create a job"""
 
+        #Checks if the user has staff
         with open("staff.json", encoding="UTF-8") as filed_staff:
             all_staff = json.load(filed_staff)
             staff = []
@@ -324,6 +335,7 @@ class MainMenu:
         """Sends the user from the Main Menu to 
         Create Invoice and checks if they can create an invoice"""
 
+        #Checks if the user has Jobs to create the invoice
         with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
             all_jobs = json.load(json_jobs)
             users_jobs = []
@@ -349,6 +361,7 @@ class AddJob:
     def __init__(self, master, username):
         self.root = master
         self.username = username
+        #Creating the GUI
         self.main_menu_return = Button(
             root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=lambda: main_menu_return(frame, self.main_menu_return))
@@ -356,40 +369,40 @@ class AddJob:
         frame = LabelFrame(root, padx=5, pady=5, bg="#5b5b5c")
         frame.grid(row=0, column=3)
 
-        addjobtxt = Label(frame, text="Add Job", font=(
+        add_job_txt = Label(frame, text="Add Job", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
-        addjobtxt.grid(row=1, column=3)
+        add_job_txt.grid(row=1, column=3)
 
-        nametxt = Label(frame, text="Client's Name", font=(
+        name_txt = Label(frame, text="Client's Name", font=(
             "Arial 13 bold"), fg="white", bg="#5b5b5c")
-        nametxt.grid(row=2, column=3)
+        name_txt.grid(row=2, column=3)
         name_entry = Entry(frame, width=20, justify="center")
         name_entry.grid(row=3, column=3)
 
         spacer1 = Label(frame, text="", bg="#5b5b5c")
         spacer1.grid(row=4, column=3)
 
-        emailtxt = Label(frame, text="Client's Email Address", font=(
+        email_txt = Label(frame, text="Client's Email Address", font=(
             "Arial 13 bold"), fg="white", bg="#5b5b5c")
-        emailtxt.grid(row=5, column=3)
+        email_txt.grid(row=5, column=3)
         email_entry = Entry(frame, width=20, justify="center")
         email_entry.grid(row=6, column=3)
 
         spacer2 = Label(frame, text="", bg="#5b5b5c")
         spacer2.grid(row=7, column=3)
 
-        phnenumtxt = Label(frame, text="Client's Phone Number", font=(
+        phne_num_txt = Label(frame, text="Client's Phone Number", font=(
             "Arial 13 bold"), fg="white", bg="#5b5b5c")
-        phnenumtxt.grid(row=8, column=3)
+        phne_num_txt.grid(row=8, column=3)
         phnenum_entry = Entry(frame, width=20, justify="center")
         phnenum_entry.grid(row=9, column=3)
 
         spacer3 = Label(frame, text="", bg="#5b5b5c")
         spacer3.grid(row=10, column=3)
 
-        addresstxt = Label(frame, text="Client's Site Address", font=(
+        address_txt = Label(frame, text="Client's Site Address", font=(
             "Arial 13 bold"), fg="white", bg="#5b5b5c")
-        addresstxt.grid(row=11, column=3)
+        address_txt.grid(row=11, column=3)
         address_entry = Entry(frame, width=20, justify="center")
         address_entry.grid(row=12, column=3)
 
@@ -437,31 +450,31 @@ class AddJob:
             "Arial 8 bold"),command=lambda: main_menu_return(frame1, main_menu_return1))
                 main_menu_return1.place(x=672, y=8)
 
-                addjobtxt = Label(frame1, text="Add Job", font=(
+                add_job_txt = Label(frame1, text="Add Job", font=(
                     "Impact 60"), fg="white", bg="#5b5b5c")
-                addjobtxt.grid(row=1, column=3)
+                add_job_txt.grid(row=1, column=3)
 
-                jobtype_txt = Label(frame1, text="Job Type", font=(
+                job_type_txt = Label(frame1, text="Job Type", font=(
                     "Arial 16 bold"), fg="white", bg="#5b5b5c")
-                jobtype_txt.grid(row=2, column=3)
-                jobtype_default = StringVar()
-                jobtype_default.set("Select Job Type")
+                job_type_txt.grid(row=2, column=3)
+                job_type_default = StringVar()
+                job_type_default.set("Select Job Type")
                 job_types = ["Charge Up", "Quote", "Estimate"]
-                jobtype_entry = OptionMenu(frame1, jobtype_default, *job_types)
-                jobtype_entry.grid(row=3, column=3)
+                job_type_entry = OptionMenu(frame1, job_type_default, *job_types)
+                job_type_entry.grid(row=3, column=3)
 
                 spacer1 = Label(frame1, text="", bg="#5b5b5c")
                 spacer1.grid(row=4, column=3)
 
-                jobstatus_txt = Label(frame1, text="Job Status", font=(
+                job_status_txt = Label(frame1, text="Job Status", font=(
                     "Arial 16 bold"), fg="white", bg="#5b5b5c")
-                jobstatus_txt.grid(row=5, column=3)
-                jobstatus_default = StringVar()
-                jobstatus_default.set("Select Job Status")
+                job_status_txt.grid(row=5, column=3)
+                job_status_default = StringVar()
+                job_status_default.set("Select Job Status")
                 job_statuses = ["In Progress", "Scheduled", "Pending", "On Hold", "Completed"]
-                jobstatus_entry = OptionMenu(
-                    frame1, jobstatus_default, *job_statuses)
-                jobstatus_entry.grid(row=6, column=3)
+                job_status_entry = OptionMenu(
+                    frame1, job_status_default, *job_statuses)
+                job_status_entry.grid(row=6, column=3)
 
                 spacer2 = Label(frame1, text="", bg="#5b5b5c")
                 spacer2.grid(row=7, column=3)
@@ -488,7 +501,7 @@ class AddJob:
 
                 add_job_btn = Button(frame1, text="Add New Job", padx=22, pady=10,
                     font=("Arial 12 bold"), command=lambda: add_job_process(
-                    name, email, phnenum, address, jobtype_default.get(), jobstatus_default.get(),
+                    name, email, phnenum, address, job_type_default.get(), job_status_default.get(),
                     staff_default.get(), frame1, main_menu_return1))
 
                 add_job_btn.grid(row=11, column=3)
@@ -537,17 +550,17 @@ class StaffTracker:
         self.spacer4 = Label(root, text="", bg="#5b5b5c")
         self.spacer5 = Label(root, text="", bg="#5b5b5c")
         self.new_staff_entry = Entry(root, width=20, justify="center")
-        self.stafftxt = Label(root, text="New Staff Name:", font=(
+        self.staff_txt = Label(root, text="New Staff Name:", font=(
             "Arial 12 bold"), fg="white", bg="#5b5b5c")
-        self.addstafftxt = Label(root, text="Add Staff", font=(
+        self.add_staff_txt = Label(root, text="Add Staff", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
 
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_btn)
         self.main_menu_return.place(x=665, y=15)
-        self.addstaff = Button(root, text="Add Staff", padx=2, pady=2, font=(
+        self.add_staff = Button(root, text="Add Staff", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.add_staff)
-        self.addstaff.place(x=10, y=15)
+        self.add_staff.place(x=10, y=15)
 
         self.staff_frame = Frame(root)
         self.staff_frame.place(x=20, y=80)
@@ -626,15 +639,15 @@ class StaffTracker:
 
     def add_staff(self):
         """Sends the user to the Add Staff GUI"""
-        self.addstaff.destroy()
+        self.add_staff.destroy()
         self.main_menu_return.destroy()
         self.staff_table.destroy()
         self.staff_frame.destroy()
         self.staff_vsb.destroy()
-        self.addstafftxt.grid(row=0, column=3)
+        self.add_staff_txt.grid(row=0, column=3)
         self.spacer1.grid(row=2, column=3)
         self.spacer2.grid(row=3, column=3)
-        self.stafftxt.grid(row=4, column=3)
+        self.staff_txt.grid(row=4, column=3)
         self.new_staff_entry.grid(row=5, column=3)
         self.spacer3.grid(row=6, column=3)
         self.spacer4.grid(row=7, column=3)
@@ -671,10 +684,10 @@ class StaffTracker:
 
     def destroy_new_staff(self):
         """Sends the user back to the staff tracker"""
-        self.addstafftxt.destroy()
+        self.add_staff_txt.destroy()
         self.spacer1.destroy()
         self.spacer2.destroy()
-        self.stafftxt.destroy()
+        self.staff_txt.destroy()
         self.new_staff_entry.destroy()
         self.spacer3.destroy()
         self.spacer4.destroy()
@@ -685,7 +698,7 @@ class StaffTracker:
 
     def main_menu_btn(self):
         """Sends the user back to the Main Menu"""
-        self.addstaff.destroy()
+        self.add_staff.destroy()
         self.main_menu_return.destroy()
         self.staff_table.destroy()
         self.staff_frame.destroy()
@@ -699,9 +712,9 @@ class InvoiceCreation:
     def __init__(self, master, username):
         self.username = username
         self.root = master
-        self.errorchecknum = 0
-        self.invoicelinecheck = 0
-        self.maxlineerror = Label(root, text="Max number of lines reached", font=(
+        self.error_check_num = 0
+        self.invoice_line_check = 0
+        self.max_line_error = Label(root, text="Max number of lines reached", font=(
                 "Arial 12 bold"), fg="red", bg="#5b5b5c")
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_return_passthrough)
@@ -715,9 +728,9 @@ class InvoiceCreation:
                     users_jobs.append(job[1:])
                     display_jobs.append(job[1:4] + job[6:])
 
-        self.invoicecreationtext = Label(root, text="Create Invoice", font=(
+        self.invoice_creation_text = Label(root, text="Create Invoice", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
-        self.invoicecreationtext.grid(row=0, column=3)
+        self.invoice_creation_text.grid(row=0, column=3)
         self.select_job = StringVar()
         self.select_job.set("Select Job to create invoice for:")
 
@@ -742,183 +755,183 @@ class InvoiceCreation:
         self.gst_num = IntVar()
         self.gst_num.set("3")
 
-        self.gstdroppeddown = False
+        self.gst_dropped_down = False
 
-        self.gsttxt = Label(root, text="Do you charge GST?", font=
+        self.gst_txt = Label(root, text="Do you charge GST?", font=
             "Arial 12 bold", fg="white", bg="#5b5b5c")
-        self.gsttxt.grid(row=1, column=3)
+        self.gst_txt.grid(row=1, column=3)
 
-        self.gstbutton1 = Radiobutton(
+        self.gst_button1 = Radiobutton(
             root, text="Yes", variable=self.gst_num, value=1,
             bg="#5b5b5c", command=self.gst_dropdown)
-        self.gstbutton2 = Radiobutton(
+        self.gst_button2 = Radiobutton(
             root, text="No", variable=self.gst_num, value=2,
             bg="#5b5b5c", command=self.destroy_gstdropdown)
-        self.gstbutton1.grid(row=2, column=3)
-        self.gstbutton2.grid(row=3, column=3)
+        self.gst_button1.grid(row=2, column=3)
+        self.gst_button2.grid(row=3, column=3)
 
-        self.desclabel = Label(root, text="Description",
+        self.desc_label = Label(root, text="Description",
                                bg="#5b5b5c", font="Arial 11")
-        self.desclabel.place(x=8, y=240)
+        self.desc_label.place(x=8, y=240)
 
-        self.quantitylabel = Label(
+        self.quantity_label = Label(
             root, text="Quantity", bg="#5b5b5c", font="Arial 11")
-        self.quantitylabel.place(x=550, y=240)
+        self.quantity_label.place(x=550, y=240)
 
-        self.pricelabel = Label(
+        self.price_label = Label(
             root, text="Price", bg="#5b5b5c", font="Arial 11")
-        self.pricelabel.place(x=675, y=240)
+        self.price_label.place(x=675, y=240)
 
-        self.descentrybox = Entry(root, width=85)
-        self.descentrybox.place(x=8, y=265)
+        self.desc_entry_box = Entry(root, width=85)
+        self.desc_entry_box.place(x=8, y=265)
 
-        self.quantityentrybox = Entry(root, width=16, justify="center")
-        self.quantityentrybox.place(x=550, y=265)
+        self.quantity_entry_box = Entry(root, width=16, justify="center")
+        self.quantity_entry_box.place(x=550, y=265)
 
-        self.priceentrybox = Entry(root, width=19, justify="center")
-        self.priceentrybox.place(x=675, y=265)
+        self.price_entry_box = Entry(root, width=19, justify="center")
+        self.price_entry_box.place(x=675, y=265)
 
-        self.descentrybox1 = Entry(root, width=85)
-        self.quantityentrybox1 = Entry(root, width=16, justify="center")
-        self.priceentrybox1 = Entry(root, width=19, justify="center")
+        self.desc_entry_box1 = Entry(root, width=85)
+        self.quantity_entry_box1 = Entry(root, width=16, justify="center")
+        self.price_entry_box1 = Entry(root, width=19, justify="center")
 
-        self.descentrybox2 = Entry(root, width=85)
-        self.quantityentrybox2 = Entry(root, width=16, justify="center")
-        self.priceentrybox2 = Entry(root, width=19, justify="center")
+        self.desc_entry_box2 = Entry(root, width=85)
+        self.quantity_entry_box2 = Entry(root, width=16, justify="center")
+        self.price_entry_box2 = Entry(root, width=19, justify="center")
 
-        self.descentrybox3 = Entry(root, width=85)
-        self.quantityentrybox3 = Entry(root, width=16, justify="center")
-        self.priceentrybox3 = Entry(root, width=19, justify="center")
+        self.desc_entry_box3 = Entry(root, width=85)
+        self.quantity_entry_box3 = Entry(root, width=16, justify="center")
+        self.price_entry_box3 = Entry(root, width=19, justify="center")
 
         self.num = 0
 
-        self.addnewline = Button(root, text="Add New Line", padx=2, pady=2, font=(
+        self.add_new_line = Button(root, text="Add New Line", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.newline)
-        self.addnewline.place(x=700, y=200)
+        self.add_new_line.place(x=700, y=200)
 
-        self.removeline = Button(root, text="Remove Line", padx=2, pady=2, font=(
+        self.remove_line_btn = Button(root, text="Remove Line", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.remove_line)
-        self.removeline.place(x=600, y=200)
+        self.remove_line_btn.place(x=600, y=200)
 
-        self.createinvoice_button = Button(root, text="Create Invoice", padx=30,
+        self.create_inovice_button = Button(root, text="Create Invoice", padx=30,
                                            pady=10, font="Arial 12 bold",
                                            borderwidth=6, command=self.invoice_create)
-        self.createinvoice_button.place(x=310, y=380)
+        self.create_inovice_button.place(x=310, y=380)
 
-        self.gstinclexcl = StringVar()
-        self.gstinclexcl.set("Is GST Included or Excluded")
-        gstoptions = ["GST Included", "GST Excluded"]
-        self.gstdrowndown_menu = OptionMenu(
-            root, self.gstinclexcl, *gstoptions)
+        self.gst_incl_excl = StringVar()
+        self.gst_incl_excl.set("Is GST Included or Excluded")
+        gst_options = ["GST Included", "GST Excluded"]
+        self.gst_dropdown_menu = OptionMenu(
+            root, self.gst_incl_excl, *gst_options)
 
     def gst_dropdown(self):
         """Displays the GST included/excluded menu"""
-        self.gstdroppeddown = True
-        self.gstdrowndown_menu.place(x=8, y=150)
+        self.gst_dropped_down = True
+        self.gst_dropdown_menu.place(x=8, y=150)
 
     def destroy_gstdropdown(self):
         """Destroys the GST included/excluded dropdown 
         menu if the user selects Yes, then switches to NO"""
-        if self.gstdroppeddown is True:
-            self.gstdrowndown_menu.place_forget()
-            self.gstdroppeddown = False
+        if self.gst_dropped_down is True:
+            self.gst_dropdown_menu.place_forget()
+            self.gst_dropped_down = False
 
     def newline(self):
         """Displays a new line in the GUI"""
         if self.num == 0:
-            self.descentrybox1.place(x=8, y=290)
-            self.quantityentrybox1.place(x=550, y=290)
-            self.priceentrybox1.place(x=675, y=290)
+            self.desc_entry_box1.place(x=8, y=290)
+            self.quantity_entry_box1.place(x=550, y=290)
+            self.price_entry_box1.place(x=675, y=290)
             self.num += 1
 
         elif self.num == 1:
-            self.descentrybox2.place(x=8, y=315)
-            self.quantityentrybox2.place(x=550, y=315)
-            self.priceentrybox2.place(x=675, y=315)
+            self.desc_entry_box2.place(x=8, y=315)
+            self.quantity_entry_box2.place(x=550, y=315)
+            self.price_entry_box2.place(x=675, y=315)
             self.num += 1
 
         elif self.num == 2:
-            self.descentrybox3.place(x=8, y=340)
-            self.quantityentrybox3.place(x=550, y=340)
-            self.priceentrybox3.place(x=675, y=340)
+            self.desc_entry_box3.place(x=8, y=340)
+            self.quantity_entry_box3.place(x=550, y=340)
+            self.price_entry_box3.place(x=675, y=340)
             self.num += 1
 
         elif self.num == 3:
             self.num += 1
-            self.maxlineerror.place(x=8, y=420)
+            self.max_line_error.place(x=8, y=420)
 
     def remove_line(self):
         """Removes the line in the GUI"""
         if self.num == 1:
-            self.descentrybox1.place_forget()
-            self.quantityentrybox1.place_forget()
-            self.priceentrybox1.place_forget()
+            self.desc_entry_box1.place_forget()
+            self.quantity_entry_box1.place_forget()
+            self.price_entry_box1.place_forget()
             self.num -= 1
 
         elif self.num == 2:
-            self.descentrybox2.place_forget()
-            self.quantityentrybox2.place_forget()
-            self.priceentrybox2.place_forget()
+            self.desc_entry_box2.place_forget()
+            self.quantity_entry_box2.place_forget()
+            self.price_entry_box2.place_forget()
             self.num -= 1
 
         elif self.num == 3:
-            self.descentrybox3.place_forget()
-            self.quantityentrybox3.place_forget()
-            self.priceentrybox3.place_forget()
+            self.desc_entry_box3.place_forget()
+            self.quantity_entry_box3.place_forget()
+            self.price_entry_box3.place_forget()
             self.num -= 1
 
         elif self.num >= 4:
-            self.descentrybox3.place_forget()
-            self.quantityentrybox3.place_forget()
-            self.priceentrybox3.place_forget()
+            self.desc_entry_box3.place_forget()
+            self.quantity_entry_box3.place_forget()
+            self.price_entry_box3.place_forget()
             self.num = 2
-            self.maxlineerror.place_forget()
-            self.maxlineerror.place_forget()
+            self.max_line_error.place_forget()
+            self.max_line_error.place_forget()
 
     def invoice_create(self):
         """Starts the invoice creation process"""
-        self.errorchecknum = 0
-        self.invoicelinecheck = 0
-        self.invoice_create_error_check(self.descentrybox.get(
-        ), self.quantityentrybox.get(), self.priceentrybox.get())
-        self.invoice_create_error_check(self.descentrybox1.get(
-        ), self.quantityentrybox1.get(), self.priceentrybox1.get())
-        self.invoice_create_error_check(self.descentrybox2.get(
-        ), self.quantityentrybox2.get(), self.priceentrybox2.get())
-        self.invoice_create_error_check(self.descentrybox3.get(
-        ), self.quantityentrybox3.get(), self.priceentrybox3.get())
+        self.error_check_num = 0
+        self.invoice_line_check = 0
+        self.invoice_create_error_check(self.desc_entry_box.get(
+        ), self.quantity_entry_box.get(), self.price_entry_box.get())
+        self.invoice_create_error_check(self.desc_entry_box1.get(
+        ), self.quantity_entry_box1.get(), self.price_entry_box1.get())
+        self.invoice_create_error_check(self.desc_entry_box2.get(
+        ), self.quantity_entry_box2.get(), self.price_entry_box2.get())
+        self.invoice_create_error_check(self.desc_entry_box3.get(
+        ), self.quantity_entry_box3.get(), self.price_entry_box3.get())
         if str(self.select_job.get()) == "Select Job to create invoice for:":
             messagebox.showerror(
                 "An error occured", "Please select a job to create the "
                 "invoice for. If there is no job, please create one")
-            self.errorchecknum += 1
+            self.error_check_num += 1
 
         if self.gst_num.get() == 3:
             messagebox.showerror(
                 "An error occured", "Please select whether you charge GST or do not")
-            self.errorchecknum += 1
+            self.error_check_num += 1
 
-        if self.gstdroppeddown is True:
-            if str(self.gstinclexcl.get()) == "Is GST Included or Excluded":
+        if self.gst_dropped_down is True:
+            if str(self.gst_incl_excl.get()) == "Is GST Included or Excluded":
                 messagebox.showerror(
                     "An error occured", "Please select whether GST "
                     "is included in the price or excluded")
-                self.errorchecknum += 1
+                self.error_check_num += 1
 
-        if self.invoicelinecheck == 4:
+        if self.invoice_line_check == 4:
             messagebox.showerror(
                 "An error occured", "Please write down atleast 1 line for your invoice")
 
-        if self.errorchecknum == 0:
+        if self.error_check_num == 0:
             lines = []
-            self.line_check(self.descentrybox.get(), self.quantityentrybox.get(),
-                            self.priceentrybox.get(), lines)
-            self.line_check(self.descentrybox1.get(), self.quantityentrybox1.get(),
-                             self.priceentrybox1.get(), lines)
-            self.line_check(self.descentrybox2.get(), self.quantityentrybox2.get(),
-                            self.priceentrybox2.get(), lines)
-            self.line_check(self.descentrybox3.get(), self.quantityentrybox3.get(),
-                            self.priceentrybox3.get(), lines)
+            self.line_check(self.desc_entry_box.get(), self.quantity_entry_box.get(),
+                            self.price_entry_box.get(), lines)
+            self.line_check(self.desc_entry_box1.get(), self.quantity_entry_box1.get(),
+                             self.price_entry_box1.get(), lines)
+            self.line_check(self.desc_entry_box2.get(), self.quantity_entry_box2.get(),
+                            self.price_entry_box2.get(), lines)
+            self.line_check(self.desc_entry_box3.get(), self.quantity_entry_box3.get(),
+                            self.price_entry_box3.get(), lines)
 
 
             with open("jobs.json", "r", encoding="UTF-8") as jobs_filed:
@@ -931,9 +944,9 @@ class InvoiceCreation:
                             phone_number = job[4]
                             email = job[3]
 
-            current_datetime = datetime.datetime.now()
+            current_date_time = datetime.datetime.now()
 
-            formatted_date = current_datetime.strftime("%d / %m / %Y")
+            formatted_date = current_date_time.strftime("%d / %m / %Y")
 
             subtotal = sum(line["quantity"] * line["unit_price"] for line in lines)
 
@@ -948,27 +961,27 @@ class InvoiceCreation:
 
             doc = SimpleDocTemplate(pdf_file, pagesize=letter)
 
-            pdftext = []
+            pdf_text = []
 
             styles = getSampleStyleSheet()
 
             header = Paragraph("Invoice", styles['Heading1'])
-            pdftext.append(header)
+            pdf_text.append(header)
             right_align = styles['Heading5']
             right_align.alignment = 2
             datetext = Paragraph(f"Date: {formatted_date}", right_align)
-            pdftext.append(datetext)
-            pdftext.append(Paragraph(f"Job Number: {int(self.select_job.get()[1])}", right_align))
-            pdftext.append(Paragraph("Invoice Billed to:", styles['Heading4']))
-            pdftext.append(Paragraph(f"Name: {name}", styles['Normal']))
-            pdftext.append(Paragraph(f"Address: {address}", styles['Normal']))
-            pdftext.append(Paragraph(f"Phone: {phone_number}", styles['Normal']))
-            pdftext.append(Paragraph(f"Email: {email}", styles['Normal']))
+            pdf_text.append(datetext)
+            pdf_text.append(Paragraph(f"Job Number: {int(self.select_job.get()[1])}", right_align))
+            pdf_text.append(Paragraph("Invoice Billed to:", styles['Heading4']))
+            pdf_text.append(Paragraph(f"Name: {name}", styles['Normal']))
+            pdf_text.append(Paragraph(f"Address: {address}", styles['Normal']))
+            pdf_text.append(Paragraph(f"Phone: {phone_number}", styles['Normal']))
+            pdf_text.append(Paragraph(f"Email: {email}", styles['Normal']))
 
 
             # Itemized list
             spacer = Spacer(1, 40)
-            pdftext.append(spacer)
+            pdf_text.append(spacer)
 
             data = [["Description", "Quantity", "Unit Price", "GST", "Total"]]
             for line in lines:
@@ -989,21 +1002,21 @@ class InvoiceCreation:
                 ('GRID', (0, 0), (-1, -1), 1, colors.black)
             ]))
 
-            pdftext.append(table)
+            pdf_text.append(table)
 
             # Subtotal and Total
-            pdftext.append(spacer)
+            pdf_text.append(spacer)
 
-            pdftext.append(
+            pdf_text.append(
                 Paragraph(f"Subtotal: ${subtotal:.2f}", styles['Heading4']))
-            pdftext.append(Paragraph(f"GST: ${gst:.2f}", styles['Heading4']))
+            pdf_text.append(Paragraph(f"GST: ${gst:.2f}", styles['Heading4']))
 
-            pdftext.append(Paragraph(f"Total: ${total:.2f}", styles['Heading2']))
+            pdf_text.append(Paragraph(f"Total: ${total:.2f}", styles['Heading2']))
 
 
             # Build the PDF
             if pdf_file:
-                doc.build(pdftext)
+                doc.build(pdf_text)
                 with open("jobs.json", "r", encoding="UTF-8") as filed_jobs:
                     all_jobs = json.load(filed_jobs)
                     for job in all_jobs:
@@ -1024,10 +1037,10 @@ class InvoiceCreation:
                 "An error occured", f"Please input all 3 inputs (Description, quantity, "
                 f"and Price) for each line you write. \n Line that caused the Error: \n" 
                 f"Description: {desc} \n quantity: {quantity} \n Price: {price}")
-            self.errorchecknum += 1
+            self.error_check_num += 1
 
         if desc and quantity and price == "":
-            self.invoicelinecheck += 1
+            self.invoice_line_check += 1
 
         if quantity == "":
             pass
@@ -1040,7 +1053,7 @@ class InvoiceCreation:
                 messagebox.showerror(
                     "An error occured", "Please make sure that "
                     "the quantity is a number and contains no other characters")
-                self.errorchecknum += 1
+                self.error_check_num += 1
 
         if price == "":
             pass
@@ -1065,31 +1078,31 @@ class InvoiceCreation:
                         messagebox.showerror(
                             "An error occured", "Please make sure that the price is" 
                             "a number and contains no other characters other than $ symbol")
-                        self.errorchecknum += 1
+                        self.error_check_num += 1
 
             except ValueError:
                 messagebox.showerror(
                     "An error occured", "Please make sure that the " 
                     "price is a number and contains no other characters other than $ sym")
-                self.errorchecknum += 1
+                self.error_check_num += 1
 
         if len(desc) > 200:
             messagebox.showerror(
                 "An error occured", "Too many characters in" 
                 "Description, please shorten it to 200 or under")
-            self.errorchecknum += 1
+            self.error_check_num += 1
 
         if len(quantity) > 8:
             messagebox.showerror(
                 "An error occured", "Too many characters" 
                 "in quantity, please shorten it to 8 or under")
-            self.errorchecknum += 1
+            self.error_check_num += 1
 
         if len(price) > 12:
             messagebox.showerror(
                 "An error occured", "Too many characters in" 
                 "Price, please shorten it to 12 or under")
-            self.errorchecknum += 1
+            self.error_check_num += 1
 
 
     def line_check(self, desc, quantity, price, lines):
@@ -1103,7 +1116,7 @@ class InvoiceCreation:
 
             gst = 0
             if self.gst_num.get() == 1:
-                if self.gstinclexcl.get() == "GST Excluded":
+                if self.gst_incl_excl.get() == "GST Excluded":
                     gst = total1 * .15
                     total = total1 + gst
                 else:
@@ -1121,46 +1134,46 @@ class InvoiceCreation:
     def main_menu_return_passthrough(self):
         """Function destroys everything in create invoice and then runs MainMenu"""
         self.main_menu_return.destroy()
-        self.quantityentrybox.destroy()
-        self.quantityentrybox1.destroy()
-        self.quantityentrybox2.destroy()
-        self.quantityentrybox3.destroy()
-        self.descentrybox.destroy()
-        self.descentrybox1.destroy()
-        self.descentrybox2.destroy()
-        self.descentrybox3.destroy()
-        self.priceentrybox.destroy()
-        self.priceentrybox1.destroy()
-        self.priceentrybox2.destroy()
-        self.priceentrybox3.destroy()
-        self.desclabel.destroy()
-        self.quantitylabel.destroy()
-        self.pricelabel.destroy()
-        self.createinvoice_button.destroy()
-        self.invoicecreationtext.destroy()
-        self.gsttxt.destroy()
-        self.gstbutton1.destroy()
-        self.gstbutton2.destroy()
+        self.quantity_entry_box.destroy()
+        self.quantity_entry_box1.destroy()
+        self.quantity_entry_box2.destroy()
+        self.quantity_entry_box3.destroy()
+        self.desc_entry_box.destroy()
+        self.desc_entry_box1.destroy()
+        self.desc_entry_box2.destroy()
+        self.desc_entry_box3.destroy()
+        self.price_entry_box.destroy()
+        self.price_entry_box1.destroy()
+        self.price_entry_box2.destroy()
+        self.price_entry_box3.destroy()
+        self.desc_label.destroy()
+        self.quantity_label.destroy()
+        self.price_label.destroy()
+        self.create_inovice_button.destroy()
+        self.invoice_creation_text.destroy()
+        self.gst_txt.destroy()
+        self.gst_button1.destroy()
+        self.gst_button2.destroy()
         self.spacer2.destroy()
         self.jobs_entry.destroy()
-        self.addnewline.destroy()
-        self.removeline.destroy()
+        self.add_new_line.destroy()
+        self.remove_line_btn.destroy()
 
 
-        if self.gstdroppeddown is True:
-            self.gstdrowndown_menu.destroy()
+        if self.gst_dropped_down is True:
+            self.gst_dropdown_menu.destroy()
 
         if self.num >= 4:
-            self.maxlineerror.destroy()
+            self.max_line_error.destroy()
 
         MainMenu(root, self.username)
 
-
+#What needs to run when the program gets ran
 def main():
     """Function Runs the program"""
     Login(root)
     root.mainloop()
 
-
+#Runs the program
 if __name__ == '__main__':
     main()
