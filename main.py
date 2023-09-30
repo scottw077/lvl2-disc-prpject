@@ -416,6 +416,7 @@ class AddJob:
         next_btn.grid(row=14, column=3)
 
         def add_job2(name, email, phnenum, address, frame):
+            #Checking for errors
             if "@" not in email or "." not in email:
                 messagebox.showerror(
                     "An error occured", "Email Address is not valid, please try again")
@@ -439,6 +440,7 @@ class AddJob:
                     "Address Box! Please enter the client's address")
 
             else:
+                #Creating the next GUI
                 frame.grid_forget()
                 self.main_menu_return.destroy()
 
@@ -508,6 +510,7 @@ class AddJob:
 
         def add_job_process(name, email, phnenum, address, job_type,
                             job_status, staff, frame, return_button):
+            #Adding the new job to the jobs json file
             with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
                 existing_jobs = json.load(json_jobs)
 
@@ -539,6 +542,7 @@ class StaffTracker:
     def __init__(self, master, username):
         self.username = username
         self.root = master
+        #Variables for the Add Staff GUI
         self.staff_tracker = Button(root, text="Return to Staff Tracker", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.destroy_new_staff)
         self.next_btn = Button(root, text="Add Staff", padx=30,
@@ -555,13 +559,15 @@ class StaffTracker:
         self.add_staff_txt = Label(root, text="Add Staff", font=(
             "Impact 60"), fg="white", bg="#5b5b5c")
 
+        #Creating the main staff tracker GUI
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.main_menu_btn)
         self.main_menu_return.place(x=665, y=15)
-        self.add_staff = Button(root, text="Add Staff", padx=2, pady=2, font=(
+        self.add_staff_btn = Button(root, text="Add Staff", padx=2, pady=2, font=(
             "Arial 8 bold"), command=self.add_staff)
-        self.add_staff.place(x=10, y=15)
+        self.add_staff_btn.place(x=10, y=15)
 
+        #Creating the staff tracker table
         self.staff_frame = Frame(root)
         self.staff_frame.place(x=20, y=80)
 
@@ -639,7 +645,7 @@ class StaffTracker:
 
     def add_staff(self):
         """Sends the user to the Add Staff GUI"""
-        self.add_staff.destroy()
+        self.add_staff_btn.destroy()
         self.main_menu_return.destroy()
         self.staff_table.destroy()
         self.staff_frame.destroy()
@@ -698,7 +704,7 @@ class StaffTracker:
 
     def main_menu_btn(self):
         """Sends the user back to the Main Menu"""
-        self.add_staff.destroy()
+        self.add_staff_btn.destroy()
         self.main_menu_return.destroy()
         self.staff_table.destroy()
         self.staff_frame.destroy()
@@ -714,6 +720,7 @@ class InvoiceCreation:
         self.root = master
         self.error_check_num = 0
         self.invoice_line_check = 0
+        #Creating the Invoice Creation GUI
         self.max_line_error = Label(root, text="Max number of lines reached", font=(
                 "Arial 12 bold"), fg="red", bg="#5b5b5c")
         self.main_menu_return = Button(root, text="Return to Main Menu", padx=2, pady=2, font=(
@@ -892,6 +899,7 @@ class InvoiceCreation:
         """Starts the invoice creation process"""
         self.error_check_num = 0
         self.invoice_line_check = 0
+        #Checking for errors
         self.invoice_create_error_check(self.desc_entry_box.get(
         ), self.quantity_entry_box.get(), self.price_entry_box.get())
         self.invoice_create_error_check(self.desc_entry_box1.get(
@@ -933,7 +941,7 @@ class InvoiceCreation:
             self.line_check(self.desc_entry_box3.get(), self.quantity_entry_box3.get(),
                             self.price_entry_box3.get(), lines)
 
-
+            #Getting the information about the job
             with open("jobs.json", "r", encoding="UTF-8") as jobs_filed:
                 all_jobs = json.load(jobs_filed)
                 for job in all_jobs:
@@ -965,6 +973,7 @@ class InvoiceCreation:
 
             styles = getSampleStyleSheet()
 
+            #Building the PDF file
             header = Paragraph("Invoice", styles['Heading1'])
             pdf_text.append(header)
             right_align = styles['Heading5']
@@ -978,8 +987,6 @@ class InvoiceCreation:
             pdf_text.append(Paragraph(f"Phone: {phone_number}", styles['Normal']))
             pdf_text.append(Paragraph(f"Email: {email}", styles['Normal']))
 
-
-            # Itemized list
             spacer = Spacer(1, 40)
             pdf_text.append(spacer)
 
@@ -988,8 +995,6 @@ class InvoiceCreation:
                 data.append([line["description"], line["quantity"], f'${line["unit_price"]:.2f}',
                              f'${line["GST"]:.2f}', f'${line["total"]:.2f}'])
 
-
-            # Create a table for the itemized list
             table = Table(data, colWidths=[4*inch, 1 *
                         inch, 1*inch, 1*inch, 1.5*inch])
             table.setStyle(TableStyle([
@@ -1003,18 +1008,12 @@ class InvoiceCreation:
             ]))
 
             pdf_text.append(table)
-
-            # Subtotal and Total
             pdf_text.append(spacer)
-
             pdf_text.append(
                 Paragraph(f"Subtotal: ${subtotal:.2f}", styles['Heading4']))
             pdf_text.append(Paragraph(f"GST: ${gst:.2f}", styles['Heading4']))
-
             pdf_text.append(Paragraph(f"Total: ${total:.2f}", styles['Heading2']))
 
-
-            # Build the PDF
             if pdf_file:
                 doc.build(pdf_text)
                 with open("jobs.json", "r", encoding="UTF-8") as filed_jobs:
