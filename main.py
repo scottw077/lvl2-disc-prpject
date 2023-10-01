@@ -510,25 +510,41 @@ class AddJob:
 
         def add_job_process(name, email, phnenum, address, job_type,
                             job_status, staff, frame, return_button):
-            #Adding the new job to the jobs json file
-            with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
-                existing_jobs = json.load(json_jobs)
+            #Checking for errors
+            if job_type == "Select Job Type":
+                messagebox.showerror("An error occured", "You must select a job type")
 
-            job_num = 0
-            for job in existing_jobs:
-                if job[0] == username:
-                    job_num += 1
+            elif job_status == "Select Job Status":
+                messagebox.showerror("An error occured", "You must select a job status")
 
-            new_job = [username, job_num, name, email, phnenum,
-                       address, job_type, job_status, staff]
+            elif staff == "Select Staff":
+                messagebox.showerror("An error occured", "You must select a staff member")
 
-            existing_jobs.append(new_job)
-            with open("jobs.json", "w", encoding="UTF-8") as j:
-                json.dump(existing_jobs, j)
-            messagebox.showinfo("Success!", "Sucessfully Added Job!")
-            frame.grid_forget()
-            return_button.destroy()
-            MainMenu(root, username)
+            else:
+                #Adding the new job to the jobs json file
+                with open("jobs.json", "r", encoding="UTF-8") as json_jobs:
+                    existing_jobs = json.load(json_jobs)
+
+                job_num = 0
+                for job in existing_jobs:
+                    if job[0] == username:
+                        job_num += 1
+
+                for i in range(0, len(existing_jobs)+1):
+                    for indiv_job in existing_jobs:
+                        if indiv_job[0] == username and indiv_job[1] == job_num:
+                            job_num += 1
+
+                new_job = [username, job_num, name, email, phnenum,
+                        address, job_type, job_status, staff]
+
+                existing_jobs.append(new_job)
+                with open("jobs.json", "w", encoding="UTF-8") as j:
+                    json.dump(existing_jobs, j)
+                messagebox.showinfo("Success!", "Sucessfully Added Job!")
+                frame.grid_forget()
+                return_button.destroy()
+                MainMenu(root, username)
 
         def main_menu_return(frame, return_button):
             frame.grid_forget()
@@ -1033,9 +1049,9 @@ class InvoiceCreation:
         """Checks for errors in the invoices creation"""
         if (desc or quantity or price) and not (desc and quantity and price):
             messagebox.showerror(
-                "An error occured", f"Please input all 3 inputs (Description, quantity, "
-                f"and Price) for each line you write. \n Line that caused the Error: \n" 
-                f"Description: {desc} \n quantity: {quantity} \n Price: {price}")
+                "An error occured", f"Please enter inputs in all 3 entryboxes (Description, "
+                F"Quantity, and Price) for each line you write. \n\nLine that caused the Error: \n" 
+                f"Description: {desc} \nQuantity: {quantity} \nPrice: {price}")
             self.error_check_num += 1
 
         if desc and quantity and price == "":
@@ -1046,7 +1062,12 @@ class InvoiceCreation:
 
         else:
             try:
-                float(quantity)
+                if float(quantity) < 0:
+                    messagebox.showerror("An error occured", "Quantity cannot be "
+                                         "negative and must be positive")
+                    self.error_check_num += 1
+                else:
+                    float(quantity)
 
             except ValueError:
                 messagebox.showerror(
@@ -1065,7 +1086,8 @@ class InvoiceCreation:
                     else:
                         messagebox.showerror(
                         "An error occured", "Please make sure that the price is a"
-                        "number and contains no other characters other than $ symbol")
+                        "number and contains no other characters other "
+                        "than $ symbol. The price cannot be negative")
                 else:
                     float(price[1:])
                     if price[0] == "$":
