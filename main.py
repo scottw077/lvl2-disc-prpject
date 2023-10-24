@@ -1224,6 +1224,7 @@ class InvoiceCreation:
         self.desc_entry_box4.destroy()
         self.quantity_entry_box4.destroy()
         self.price_entry_box4.destroy()
+        self.business_name.destroy()
 
         if self.gst_dropped_down is True:
             self.gst_dropdown_menu.destroy()
